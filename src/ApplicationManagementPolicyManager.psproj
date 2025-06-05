@@ -10,5 +10,6 @@
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Globals_ps1">Globals.ps1</File>
     <File Build="0" ReferenceFunction="Show-MainForm_psf">MainForm.psf</File>
     <File Build="1">.gitignore</File>
+    <File Build="0" ReferenceFunction="Show-AboutForm_psf">AboutForm.psf</File>
   </Files>
 </Project>
