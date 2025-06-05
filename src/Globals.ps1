@@ -748,11 +748,6 @@ function Set-AppManagementPolicy
 	}
 }
 
-
-
-
-
-
 function Get-CurrentAppSecrets {
     [CmdletBinding()]
     param (

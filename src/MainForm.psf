@@ -615,8 +615,7 @@ $formEntraIDApplicationMa_Load={
 	
 	# Get theme mode
 	$global:darkModeStateUI = Test-WindowsInDarkMode
-	
-	
+		
 	#  Set state for theme
 	if ($global:darkModeStateUI)
 	{
@@ -1365,6 +1364,6 @@ $button_MainForm_About_Click={
 	Show-MsgBox -Title "About $ToolName v. $FormVersion" -Prompt "Created by: $Author`r`n`r`nCopyright $yyyy © All rights reserved`r`n`r`nWebsite: sonnes.cloud`r`nBlog: blog.sonnes.cloud" -Icon Information -BoxType OKOnly
 }
 ]]></Code>
-  <Mode>0</Mode>
+  <Mode>1</Mode>
   <Assemblies />
 </File>
