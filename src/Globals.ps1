@@ -716,45 +716,26 @@ function New-AppManagementPolicy
 		[Parameter(Mandatory)]
 		[string]$KeyMaxLifetime,
 		[Parameter(Mandatory)]
-		[bool]$Enabled
+		[string]$PasswordState,
+		# Expecting "enabled" or "disabled"
+		[Parameter(Mandatory)]
+		[string]$KeyState,
+		# Expecting "enabled" or "disabled"
+		[Parameter(Mandatory = $false)]
+		[bool]$Enabled = $true
 	)
 	
-	# Convert to ISO 8601 duration if the input is numeric.
+	# Convert lifetime values to ISO 8601 if necessary
 	if ($PasswordMaxLifetime -match '^\d+$')
 	{
 		$PasswordMaxLifetime = "P$PasswordMaxLifetime" + "D"
 	}
-	elseif (-not $PasswordMaxLifetime.StartsWith("P"))
-	{
-		$PasswordMaxLifetime = "P90D"
-	}
-	
 	if ($KeyMaxLifetime -match '^\d+$')
 	{
 		$KeyMaxLifetime = "P$KeyMaxLifetime" + "D"
 	}
-	elseif (-not $KeyMaxLifetime.StartsWith("P"))
-	{
-		$KeyMaxLifetime = "P90D"
-	}
 	
-	Write-Log -Level INFO -Message "Creating app management policy for '$DisplayName'..."
-	
-	if (-not (Get-MgContext -ErrorAction SilentlyContinue))
-	{
-		Write-Log -Level INFO -Message "Connecting to Microsoft Graph..."
-		try
-		{
-			Connect-MgGraph -Scopes "Policy.ReadWrite.ApplicationConfiguration" -ErrorAction Stop
-			Write-Log -Level INFO -Message "Connected to Microsoft Graph."
-		}
-		catch
-		{
-			Write-Log -Level ERROR -Message "Failed to connect to Microsoft Graph: $($_.Exception.Message)"
-			return
-		}
-	}
-	
+	# Build the request body including the specific state for each restriction
 	$params = @{
 		displayName  = $DisplayName
 		description  = $Description
@@ -763,24 +744,24 @@ function New-AppManagementPolicy
 			passwordCredentials = @(
 				@{
 					restrictionType					    = "passwordLifetime"
-					state							    = "enabled"
+					state							    = $PasswordState
 					maxLifetime						    = $PasswordMaxLifetime
 					restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse("2014-10-19T10:37:00Z")
 				},
 				@{
 					restrictionType					    = "symmetricKeyLifetime"
-					state							    = "enabled"
+					state							    = $KeyState
 					maxLifetime						    = $KeyMaxLifetime
 					restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse("2014-10-19T10:37:00Z")
 				}
 			)
-		}
+		}		
 	}
 	
 	try
 	{
-		New-MgPolicyAppManagementPolicy -BodyParameter $params
-		Write-Log -Level INFO -Message "App management policy created successfully."
+		New-MgPolicyAppManagementPolicy -BodyParameter $params -ErrorAction Stop
+		Write-Log -Level INFO -Message "App management policy '$DisplayName' created successfully."
 	}
 	catch
 	{
