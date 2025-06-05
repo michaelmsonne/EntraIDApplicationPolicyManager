@@ -522,7 +522,7 @@ function ConnectToGraph
 	try
 	{
 		# Get currect context (if any)
-		$context = Get-MgContext
+		$context = Get-MgContext -ErrorAction SilentlyContinue
 		
 		# If context exists
 		if ($context -and $context.ClientId -and $context.TenantId)
@@ -656,4 +656,170 @@ function Get-TenantId
 		Write-Log -Level ERROR -Message "Failed to retrieve tenant ID for input: $LookupInputData. Error: $($_.Exception.Message)"
 		return $null
 	}
+}
+
+function Assign-AppManagementPolicy
+{
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory)]
+		[string]$ObjectId,
+		[Parameter(Mandatory)]
+		[string]$PolicyId
+	)
+	
+	Write-Log -Level INFO -Message "Assigning Policy '$PolicyId' to Application '$ObjectId'."
+	
+	try
+	{
+		$body = @{
+			"@odata.id" = "https://graph.microsoft.com/v1.0/policies/appManagementPolicies/$PolicyId"
+		}
+		New-MgApplicationAppManagementPolicyByRef -ApplicationId $ObjectId -BodyParameter $body -ErrorAction Stop
+		Write-Log -Level INFO -Message "Policy '$PolicyId' assigned to application '$ObjectId' successfully."
+	}
+	catch
+	{
+		Write-Log -Level ERROR -Message "Failed to assign policy: $($_.Exception.Message)"
+	}
+}
+
+function Set-AppManagementPolicy
+{
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory)]
+		[string]$DisplayName,
+		[Parameter(Mandatory)]
+		[string]$Description,
+		[Parameter(Mandatory)]
+		[string]$PasswordMaxLifetime,
+		[Parameter(Mandatory)]
+		[string]$KeyMaxLifetime
+	)
+	
+	Write-Log -Level INFO -Message "Creating app-specific management policy for '$DisplayName'..."
+	
+	if (-not (Get-MgContext -ErrorAction SilentlyContinue))
+	{
+		Write-Log -Level INFO -Message "Connecting to Microsoft Graph..."
+		try
+		{
+			Connect-MgGraph -Scopes "Policy.ReadWrite.ApplicationConfiguration" -ErrorAction Stop
+			Write-Log -Level INFO -Message "Connected to Microsoft Graph."
+		}
+		catch
+		{
+			Write-Log -Level ERROR -Message "Failed to connect to Microsoft Graph: $($_.Exception.Message)"
+			return
+		}
+	}
+	
+	$params = @{
+		displayName  = $DisplayName
+		description  = $Description
+		isEnabled    = $true
+		restrictions = @{
+			passwordCredentials = @(
+				@{
+					restrictionType					    = "passwordLifetime"
+					state							    = "enabled"
+					maxLifetime						    = $PasswordMaxLifetime
+					restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse("2014-10-19T10:37:00Z")
+				},
+				@{
+					restrictionType					    = "symmetricKeyLifetime"
+					state							    = "enabled"
+					maxLifetime						    = $KeyMaxLifetime
+					restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse("2014-10-19T10:37:00Z")
+				}
+			)
+		}
+	}
+	
+	try
+	{
+		New-MgPolicyAppManagementPolicy -BodyParameter $params -ErrorAction Stop
+		Write-Log -Level INFO -Message "App-specific management policy created successfully."
+	}
+	catch
+	{
+		Write-Log -Level ERROR -Message "Error creating app-specific management policy: $($_.Exception.Message)"
+	}
+}
+
+
+
+
+
+
+function Get-CurrentAppSecrets {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$AppRegistrationID,
+        [Parameter(Mandatory)]
+        [string]$AppRegistrationName
+    )
+    
+    $result = ""
+    try {
+        Write-Log -Level INFO -Message "Getting secrets and certificates for App Registration with Id: '$AppRegistrationID' and Name: '$AppRegistrationName'"
+        
+        # Retrieve the application – PasswordCredentials and KeyCredentials properties hold the secrets and certs
+        $app = Get-MgApplication -ApplicationId $AppRegistrationID -ErrorAction Stop
+        
+        # Process password secrets
+        $secrets = $app.PasswordCredentials
+        if ($secrets -and $secrets.Count -gt 0) {
+            $result += "Current secrets for App Registration '$AppRegistrationName' (ID: '$AppRegistrationID'):`r`n"
+            foreach ($secret in $secrets) {
+                $secretInfo = @"
+SecretKeyId:   $($secret.KeyId)
+DisplayName:   $($secret.DisplayName)
+StartDate:     $($secret.StartDateTime)
+EndDate:       $($secret.EndDateTime)
+"@
+                $result += $secretInfo + "`r`n"
+            }
+            Write-Log -Level INFO -Message "Retrieved secrets for App Registration '$AppRegistrationName' successfully."
+        }
+        else {
+            $result += "No secrets found for App Registration '$AppRegistrationName' (ID: '$AppRegistrationID').`r`n"
+            Write-Log -Level INFO -Message "No secrets found for App Registration '$AppRegistrationName'."
+        }
+        
+        # Process certificates (KeyCredentials)
+        $certs = $app.KeyCredentials
+		if ($certs -and $certs.Count -gt 0)
+		{
+			$result += "`r`nCurrent certificates for App Registration '$AppRegistrationName' (ID: '$AppRegistrationID'):`r`n"
+			foreach ($cert in $certs)
+			{
+				$certDisplayName = if ($cert.PSObject.Properties['DisplayName']) { $cert.DisplayName }
+				else { "<n/a>" }
+				$certInfo = @"
+CertificateKeyId:   $($cert.KeyId)
+DisplayName:        $certDisplayName
+Type:               $($cert.Type)
+Usage:              $($cert.Usage)
+StartDate:          $($cert.StartDateTime)
+EndDate:            $($cert.EndDateTime)
+"@
+				$result += $certInfo + "`r`n`r`n"
+			}
+			Write-Log -Level INFO -Message "Retrieved certificates for App Registration '$AppRegistrationName' successfully."
+		}
+		else
+		{
+			$result += "`r`nNo certificates found for App Registration '$AppRegistrationName' (ID: '$AppRegistrationID').`r`n"
+			Write-Log -Level INFO -Message "No certificates found for App Registration '$AppRegistrationName'."
+		}
+	}
+	catch
+	{
+		$result += "Error retrieving secrets and certificates for App Registration '$AppRegistrationName' (ID: '$AppRegistrationID'): $($_.Exception.Message)`r`n"
+		Write-Log -Level ERROR -Message "Error retrieving secrets and certificates for App Registration '$AppRegistrationName' (ID: '$AppRegistrationID'): $($_.Exception.Message)"
+	}
+	return $result
 }
