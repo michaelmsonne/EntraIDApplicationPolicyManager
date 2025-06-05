@@ -658,6 +658,25 @@ function Get-TenantId
 	}
 }
 
+function Get-PolicyList
+{
+	[CmdletBinding()]
+	param ()
+	
+	try
+	{
+		Write-Log -Level INFO -Message "Retrieving app management policies from Entra ID..."
+		$policyList = Get-MgPolicyAppManagementPolicy -All -ErrorAction Stop
+		Write-Log -Level INFO -Message "Retrieved $($policyList.Count) app management policies."
+		return $policyList
+	}
+	catch
+	{
+		Write-Log -Level ERROR -Message "Error retrieving app management policies: $($_.Exception.Message)"
+		return @()
+	}
+}
+
 function Assign-AppManagementPolicy
 {
 	[CmdletBinding()]
@@ -684,7 +703,7 @@ function Assign-AppManagementPolicy
 	}
 }
 
-function Set-AppManagementPolicy
+function New-AppManagementPolicy
 {
 	[CmdletBinding()]
 	param (
@@ -695,10 +714,31 @@ function Set-AppManagementPolicy
 		[Parameter(Mandatory)]
 		[string]$PasswordMaxLifetime,
 		[Parameter(Mandatory)]
-		[string]$KeyMaxLifetime
+		[string]$KeyMaxLifetime,
+		[Parameter(Mandatory)]
+		[bool]$Enabled
 	)
 	
-	Write-Log -Level INFO -Message "Creating app-specific management policy for '$DisplayName'..."
+	# Convert to ISO 8601 duration if the input is numeric.
+	if ($PasswordMaxLifetime -match '^\d+$')
+	{
+		$PasswordMaxLifetime = "P$PasswordMaxLifetime" + "D"
+	}
+	elseif (-not $PasswordMaxLifetime.StartsWith("P"))
+	{
+		$PasswordMaxLifetime = "P90D"
+	}
+	
+	if ($KeyMaxLifetime -match '^\d+$')
+	{
+		$KeyMaxLifetime = "P$KeyMaxLifetime" + "D"
+	}
+	elseif (-not $KeyMaxLifetime.StartsWith("P"))
+	{
+		$KeyMaxLifetime = "P90D"
+	}
+	
+	Write-Log -Level INFO -Message "Creating app management policy for '$DisplayName'..."
 	
 	if (-not (Get-MgContext -ErrorAction SilentlyContinue))
 	{
@@ -718,7 +758,7 @@ function Set-AppManagementPolicy
 	$params = @{
 		displayName  = $DisplayName
 		description  = $Description
-		isEnabled    = $true
+		isEnabled    = $Enabled
 		restrictions = @{
 			passwordCredentials = @(
 				@{
@@ -739,12 +779,12 @@ function Set-AppManagementPolicy
 	
 	try
 	{
-		New-MgPolicyAppManagementPolicy -BodyParameter $params -ErrorAction Stop
-		Write-Log -Level INFO -Message "App-specific management policy created successfully."
+		New-MgPolicyAppManagementPolicy -BodyParameter $params
+		Write-Log -Level INFO -Message "App management policy created successfully."
 	}
 	catch
 	{
-		Write-Log -Level ERROR -Message "Error creating app-specific management policy: $($_.Exception.Message)"
+		Write-Log -Level ERROR -Message "Error creating app management policy: $($_.Exception.Message)"
 	}
 }
 
