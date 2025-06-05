@@ -2153,8 +2153,8 @@ $buttonRefreshPolicies_Click={
 			}
 			
 			$itemText = "Name: $($policy.DisplayName) | State: $($policy.IsEnabled) | " +
-			"Secret Lifetime: $pwdLifetimeDays days ($pwdState) | " +
-			"Certificate Lifetime: $keyLifetimeDays days ($keyState) | " +
+			"Lifetime: Secret: $pwdLifetimeDays days ($pwdState) | " +
+			"Certificate: $keyLifetimeDays days ($keyState), " +
 			"Description: $($policy.Description) | ID: $($policy.Id)"
 			$listboxPolicies.Items.Add($itemText)
 		}
