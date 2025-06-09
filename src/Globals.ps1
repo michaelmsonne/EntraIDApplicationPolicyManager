@@ -885,11 +885,15 @@ function Get-AppAssignedPolicies
 		}
 		else
 		{
+			Write-Log -Level INFO -Message "No policies are assigned to Application ID '$AppId'."
+			
 			return "No policies are assigned to Application ID '$AppId'."
 		}
 	}
 	catch
 	{
-		throw "Error retrieving assigned policies: $($_.Exception.Message)"
+		Write-Log -Level ERROR -Message "Error retrieving assigned policies for Application ID '$AppId' : $($_.Exception.Message)"
+		
+		throw "Error retrieving assigned policies for Application ID '$AppId' : $($_.Exception.Message)"
 	}
 }
