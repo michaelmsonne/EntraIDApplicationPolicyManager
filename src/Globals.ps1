@@ -849,3 +849,47 @@ EndDate:            $($cert.EndDateTime)
 	}
 	return $result
 }
+
+function Get-AppAssignedPolicies
+{
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $true)]
+		[string]$AppId
+	)
+	
+	try
+	{
+		Write-Log -Level INFO -Message "Getting assigned App Protection Policy for Application with Id: '$AppId'"
+		
+		# Retrieve the application with its assigned policies expanded
+		$app = Get-MgApplication -ApplicationId $AppId -ExpandProperty appManagementPolicies -ErrorAction Stop
+		
+		if ($app.appManagementPolicies)
+		{
+			$policyList = $app.appManagementPolicies | ForEach-Object {
+				# Format the JSON with depth 10
+				$jsonRestrictions = $_.Restrictions | ConvertTo-Json -Depth 10
+				$details = "Name: $($_.DisplayName)`r`n" +
+				"ID: $($_.Id)`r`n" +
+				"Description: $($_.Description)`r`n" +
+				"Enabled: $($_.IsEnabled)`r`n" +
+				"Restrictions: `r`n$jsonRestrictions`r`n" +
+				"----------------------"
+				$details
+			}
+			
+			Write-Log -Level INFO -Message "Received assigned App Protection Policy for Application with Id: '$AppId'"
+			
+			return $policyList -join "`r`n"
+		}
+		else
+		{
+			return "No policies are assigned to Application ID '$AppId'."
+		}
+	}
+	catch
+	{
+		throw "Error retrieving assigned policies: $($_.Exception.Message)"
+	}
+}

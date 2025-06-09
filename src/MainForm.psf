@@ -1875,6 +1875,8 @@ $buttonConnectMicrosoftGraph_Click={
 				
 				# Load the default permissions for "Microsoft Graph"
 				#Get-AssignableApiPermissionScopes -ServiceType "Microsoft Graph"
+				
+				$buttonRefreshPolicies.PerformClick() # Refresh the policy list if needed
 			}
 			else
 			{
@@ -2339,10 +2341,18 @@ $buttonDeleteSelectedPolicy_Click={
 		return
 	}
 	$selected = $listboxPolicies.SelectedItem.ToString()
-	if ($selected -match "ID:\s*(?<id>[0-9a-fA-F\-]+)$")
+	# Use a single regex to capture Name, Description and ID
+	if ($selected -match "Name:\s*(?<name>.*?)\s*\|.*Description:\s*(?<desc>.*?)\s*\|.*ID:\s*(?<id>[0-9a-fA-F\-]+)$")
 	{
 		$policyId = $matches['id'].Trim()
-		$confirmation = Show-MsgBox -Prompt "Are you sure you want to delete policy ID: '$policyId'?" -Title "Confirm Delete" -Icon Question -BoxType YesNo -DefaultButton 2
+		$policyName = $matches['name'].Trim()
+		$policyDesc = $matches['desc'].Trim()
+		
+		$confirmationMsg = "Are you sure you want to delete policy:" + "`r`n" +
+		"Name: $policyName" + "`r`n" +
+		"ID: $policyId" + "`r`n" +
+		"Description: $policyDesc"
+		$confirmation = Show-MsgBox -Prompt $confirmationMsg -Title "Confirm Delete" -Icon Question -BoxType YesNo -DefaultButton 2
 		if ($confirmation -eq "Yes")
 		{
 			try
@@ -2359,8 +2369,8 @@ $buttonDeleteSelectedPolicy_Click={
 	}
 	else
 	{
-		Show-MsgBox -Prompt "Could not extract Policy ID from the selected item." -Title "Delete Policy Error" -Icon Critical -BoxType OKOnly
-	}	
+		Show-MsgBox -Prompt "Could not extract policy details from the selected item." -Title "Delete Policy Error" -Icon Critical -BoxType OKOnly
+	}
 }
 
 $buttonTogglePolicyState_Click={
@@ -2400,8 +2410,6 @@ $buttonTogglePolicyState_Click={
 
 $buttonGetAssignedPolicy_Click = {
 	
-	# TODO
-	
 	# Retrieve the application ID from the textbox
 	$appId = $textboxselectedIdentityID.Text.Trim()
 	if ([string]::IsNullOrEmpty($appId))
@@ -2412,28 +2420,7 @@ $buttonGetAssignedPolicy_Click = {
 	
 	try
 	{
-		# Get the application with its assigned policies expanded
-		$app = Get-MgApplication -ApplicationId $appId -ExpandProperty appManagementPolicies -ErrorAction Stop
-		
-		if ($app.appManagementPolicies)
-		{
-			$policyList = $app.appManagementPolicies | ForEach-Object {
-				# Format the JSON with depth 10
-				$jsonRestrictions = $_.Restrictions | ConvertTo-Json -Depth 10
-				$details = "Name: $($_.DisplayName)`r`n" +
-				"ID: $($_.Id)`r`n" +
-				"Description: $($_.Description)`r`n" +
-				"Enabled: $($_.IsEnabled)`r`n" +
-				"Restrictions: `r`n$jsonRestrictions`r`n" +
-				"----------------------"
-				$details
-			}
-			$result = $policyList -join "`r`n"
-		}
-		else
-		{
-			$result = "No policies are assigned to Application ID '$appId'."
-		}
+		$result = Get-AppAssignedPolicies -AppId $appId
 		
 		# Ensure the textbox is multiline so formatting is preserved
 		$textboxAssingedSecretsAndPolicy.Multiline = $true
@@ -2441,7 +2428,7 @@ $buttonGetAssignedPolicy_Click = {
 	}
 	catch
 	{
-		Show-MsgBox -Prompt "Error retrieving assigned policies: $($_.Exception.Message)" -Title "Get Assigned Policy Error" -Icon Critical -BoxType OKOnly
+		Show-MsgBox -Prompt $_ -Title "Get Assigned Policy Error" -Icon Critical -BoxType OKOnly
 	}
 }
 ]]></Code>
