@@ -932,7 +932,7 @@ function Create-DevPolicy
 {
 	$params = @{
 		displayName  = "Development App Policy"
-		description  = "Allows use of Client Secrets for Dev apps"
+		description  = "Allows use of Client Secrets for Dev apps - Created on $(Get-Date -Format 'yyyy-MM-dd')"
 		isEnabled    = $true
 		restrictions = @{
 			passwordCredentials = @(
@@ -948,6 +948,7 @@ function Create-DevPolicy
 	try
 	{
 		$newPolicy = New-MgPolicyAppManagementPolicy -BodyParameter $params -ErrorAction Stop
+		
 		Write-Log -Level INFO -Message "Development App Policy created successfully. Policy ID: $($newPolicy.Id)"
 		Show-MsgBox -Prompt "Development App Policy created successfully." -Title "Create Dev Policy" -Icon Information -BoxType OKOnly
 	}
