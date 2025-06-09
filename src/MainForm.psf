@@ -2397,39 +2397,6 @@ $buttonTogglePolicyState_Click={
 	}	
 }
 
-function Get-AppManagementPolicyAssignments
-{
-	[CmdletBinding()]
-	param (
-		[Parameter(Mandatory = $true)]
-		[string]$ObjectId
-	)
-	
-	# Retrieve all policies from your custom Get-PolicyList function.
-	$allPolicies = Get-PolicyList
-	
-	# Debug: Log each policy's properties for the given object.
-	foreach ($policy in $allPolicies)
-	{
-		if ($policy.PSObject.Properties.Name -contains "AppliesTo")
-		{
-			Write-Log -Level DEBUG -Message "Policy '$($policy.DisplayName)' has AppliesTo: $($policy.AppliesTo)"
-		}
-		else
-		{
-			Write-Log -Level DEBUG -Message "Policy '$($policy.DisplayName)' does NOT have an AppliesTo property."
-		}
-	}
-	
-	# Filter policies by checking if the AppliesTo property contains the application ID.
-	$assignedPolicies = $allPolicies | Where-Object {
-		# Use case-insensitive comparison and ensure the property exists and is not null.
-		$_.PSObject.Properties.Name -contains "AppliesTo" -and `
-		($_.AppliesTo -and (@($_.AppliesTo) -contains $ObjectId))
-	}
-	
-	return $assignedPolicies
-}
 
 $buttonGetAssignedPolicy_Click = {
 	
@@ -2445,21 +2412,23 @@ $buttonGetAssignedPolicy_Click = {
 	
 	try
 	{
-		# Retrieve the assigned policy/policies for the application.
-		# This function must be implemented to query your system/MS Graph for assignments.
-		$assignments = Get-AppManagementPolicyAssignments -ObjectId $appId
+		# Get the application with its assigned policies expanded
+		$app = Get-MgApplication -ApplicationId $appId -ExpandProperty appManagementPolicies -ErrorAction Stop
 		
-		if ($assignments)
+		if ($app.appManagementPolicies)
 		{
-			# Format the output (you could also loop through them and format your list as needed)
-			$result = $assignments | ConvertTo-Json -Depth 5
+			# Build a list of policies in the form "DisplayName (PolicyId)"
+			$policyList = $app.appManagementPolicies | ForEach-Object {
+				"$($_.DisplayName) ($($_.Id))"
+			}
+			$result = $policyList -join "`r`n"
 		}
 		else
 		{
 			$result = "No policies are assigned to Application ID '$appId'."
 		}
 		
-		# Display the result in the textbox (it can also be a multiline textbox)
+		# Display the result
 		$textboxAssingedSecretsAndPolicy.Text = $result
 	}
 	catch
