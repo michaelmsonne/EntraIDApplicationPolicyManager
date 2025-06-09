@@ -2796,7 +2796,7 @@ function Convert-ToIsoDuration
 
 $btnUpdate_Click = {
 	try
-	{		
+	{
 		# Collect main policy properties from UI
 		$displayName = $txtDefaultPolicyDisplayName.Text.Trim()
 		$description = $txtDefaultPolicyDescription.Text.Trim()
@@ -2810,7 +2810,6 @@ $btnUpdate_Click = {
 		if ($null -eq $pwdLifetimeInput) { $pwdLifetimeInput = "" }
 		if ($pwdLifetimeInput -is [array]) { $pwdLifetimeInput = $pwdLifetimeInput -join '' }
 		$pwdLifetimeInput = $pwdLifetimeInput.ToString().Trim()
-		# Convert to ISO 8601 if needed
 		if ($pwdLifetimeInput -match '^\d+$')
 		{
 			$pwdLifetime = "P$pwdLifetimeInput" + "D"
@@ -2819,9 +2818,6 @@ $btnUpdate_Click = {
 		{
 			$pwdLifetime = $pwdLifetimeInput
 		}
-		Write-Log -Level INFO -Message "pwdLifetimeInput after trim: '$pwdLifetimeInput'"
-		Write-Log -Level INFO -Message "pwdLifetime = $pwdLifetime"
-		
 		if ($pwdLifetimeInput -and -not $pwdLifetime)
 		{
 			[System.Windows.Forms.MessageBox]::Show("Invalid password lifetime. Use a number (days) or ISO 8601 duration (e.g. P90D).", "Input Error",
@@ -2839,28 +2835,93 @@ $btnUpdate_Click = {
 		}
 		
 		# passwordAddition
-		$passwordCredentials += @{
-			restrictionType					    = "passwordAddition"
-			maxLifetime						    = $null
-			restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpPwdDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
-			state							    = "enabled"
+		$pwdAdditionLifetimeInput = $txtPwdAdditionLifetime.Text
+		if ($null -eq $pwdAdditionLifetimeInput) { $pwdAdditionLifetimeInput = "" }
+		if ($pwdAdditionLifetimeInput -is [array]) { $pwdAdditionLifetimeInput = $pwdAdditionLifetimeInput -join '' }
+		$pwdAdditionLifetimeInput = $pwdAdditionLifetimeInput.ToString().Trim()
+		if ($pwdAdditionLifetimeInput -match '^\d+$')
+		{
+			$pwdAdditionLifetime = "P$pwdAdditionLifetimeInput" + "D"
 		}
+		else
+		{
+			$pwdAdditionLifetime = $pwdAdditionLifetimeInput
+		}
+		if ($pwdAdditionLifetimeInput -and -not $pwdAdditionLifetime)
+		{
+			[System.Windows.Forms.MessageBox]::Show("Invalid password addition lifetime. Use a number (days) or ISO 8601 duration (e.g. P90D).", "Input Error",
+				[System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+			return
+		}
+		if ($pwdAdditionLifetime)
+		{
+			$passwordCredentials += @{
+				restrictionType = "passwordAddition"
+				maxLifetime	    = $pwdAdditionLifetime
+				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpPwdDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+				state		    = "enabled"
+			}
+		}
+		
 		
 		# customPasswordAddition
-		$passwordCredentials += @{
-			restrictionType					    = "customPasswordAddition"
-			maxLifetime						    = $null
-			restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpCustomPasswordDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
-			state							    = "enabled"
+		$customPwdAdditionLifetimeInput = $txtCustomPwdAdditionLifetime.Text
+		if ($null -eq $customPwdAdditionLifetimeInput) { $customPwdAdditionLifetimeInput = "" }
+		if ($customPwdAdditionLifetimeInput -is [array]) { $customPwdAdditionLifetimeInput = $customPwdAdditionLifetimeInput -join '' }
+		$customPwdAdditionLifetimeInput = $customPwdAdditionLifetimeInput.ToString().Trim()
+		if ($customPwdAdditionLifetimeInput -match '^\d+$')
+		{
+			$customPwdAdditionLifetime = "P$customPwdAdditionLifetimeInput" + "D"
+		}
+		else
+		{
+			$customPwdAdditionLifetime = $customPwdAdditionLifetimeInput
+		}
+		if ($customPwdAdditionLifetimeInput -and -not $customPwdAdditionLifetime)
+		{
+			[System.Windows.Forms.MessageBox]::Show("Invalid custom password addition lifetime. Use a number (days) or ISO 8601 duration (e.g. P90D).", "Input Error",
+				[System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+			return
+		}
+		if ($customPwdAdditionLifetime)
+		{
+			$passwordCredentials += @{
+				restrictionType = "customPasswordAddition"
+				maxLifetime	    = $customPwdAdditionLifetime
+				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpCustomPasswordDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+				state		    = "enabled"
+			}
+		}
+				
+		# symmetricKeyAddition
+		$symmetricKeyAdditionLifetimeInput = $txtSymmetricKeyAdditionLifetime.Text
+		if ($null -eq $symmetricKeyAdditionLifetimeInput) { $symmetricKeyAdditionLifetimeInput = "" }
+		if ($symmetricKeyAdditionLifetimeInput -is [array]) { $symmetricKeyAdditionLifetimeInput = $symmetricKeyAdditionLifetimeInput -join '' }
+		$symmetricKeyAdditionLifetimeInput = $symmetricKeyAdditionLifetimeInput.ToString().Trim()
+		if ($symmetricKeyAdditionLifetimeInput -match '^\d+$')
+		{
+			$symmetricKeyAdditionLifetime = "P$symmetricKeyAdditionLifetimeInput" + "D"
+		}
+		else
+		{
+			$symmetricKeyAdditionLifetime = $symmetricKeyAdditionLifetimeInput
+		}
+		if ($symmetricKeyAdditionLifetimeInput -and -not $symmetricKeyAdditionLifetime)
+		{
+			[System.Windows.Forms.MessageBox]::Show("Invalid symmetric key addition lifetime. Use a number (days) or ISO 8601 duration (e.g. P90D).", "Input Error",
+				[System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+			return
+		}
+		if ($symmetricKeyAdditionLifetime)
+		{
+			$passwordCredentials += @{
+				restrictionType = "symmetricKeyAddition"
+				maxLifetime	    = $symmetricKeyAdditionLifetime
+				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpSymmetricKeyDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+				state		    = "enabled"
+			}
 		}
 		
-		# symmetricKeyAddition
-		$passwordCredentials += @{
-			restrictionType					    = "symmetricKeyAddition"
-			maxLifetime						    = $null
-			restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpSymmetricKeyDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
-			state							    = "enabled"
-		}
 		
 		# Key Credentials Restrictions
 		$keyCredentials = @()
@@ -2868,7 +2929,6 @@ $btnUpdate_Click = {
 		if ($null -eq $keyLifetimeInput) { $keyLifetimeInput = "" }
 		if ($keyLifetimeInput -is [array]) { $keyLifetimeInput = $keyLifetimeInput -join '' }
 		$keyLifetimeInput = $keyLifetimeInput.ToString().Trim()
-		# Convert to ISO 8601 if needed
 		if ($keyLifetimeInput -match '^\d+$')
 		{
 			$keyLifetime = "P$keyLifetimeInput" + "D"
@@ -2904,6 +2964,8 @@ $btnUpdate_Click = {
 			}
 		}
 		
+		Write-Log -Level INFO -Message ("Params JSON: " + ($params | ConvertTo-Json -Depth 10))
+		
 		try
 		{
 			Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params -ErrorAction Stop
@@ -2916,6 +2978,9 @@ $btnUpdate_Click = {
 				[System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
 			Write-Log -Level ERROR -Message "Error updating policy: $($_.Exception.Message)"
 		}
+		
+		# Optionally refresh the UI
+		Load-DefaultPolicy
 	}
 	catch
 	{
