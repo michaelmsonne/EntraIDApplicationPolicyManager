@@ -1941,12 +1941,6 @@ $buttonConnectMicrosoftGraph_Click={
 				# Populate the ServiceComboBox with service principals
 				#Populate-ServiceComboBox
 				
-				# Set the default selection to "Microsoft Graph"
-				#$ServiceComboBox.SelectedItem = "Microsoft Graph"
-				
-				# Load the default permissions for "Microsoft Graph"
-				#Get-AssignableApiPermissionScopes -ServiceType "Microsoft Graph"
-				
 				$buttonRefreshPolicies.PerformClick() # Refresh the policy list if needed
 			}
 			else
@@ -2494,10 +2488,10 @@ $openLogFileForTodayToolStripMenuItem_Click={
 $myBlogToolStripMenuItem_Click={
 	
 	# Open blog
-	Start-Process "https://blog.sonnes.cloud"
+	Start-Process $global:BlogURL
 	
 	# Log
-	Write-Log -Level INFO -Message "The user clicked on the link for more information about on the website https://blog.sonnes.cloud"
+	Write-Log -Level INFO -Message "The user clicked on the link for more information about on the website $global:BlogURL"
 	
 }
 
