@@ -713,6 +713,31 @@ function Assign-AppManagementPolicy
 	}
 }
 
+function Remove-AppManagementPolicy
+{
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $true)]
+		[string]$ObjectId,
+		[Parameter(Mandatory = $true)]
+		[string]$PolicyId
+	)
+	
+	Write-Log -Level INFO -Message "Removing Policy '$PolicyId' from Application '$ObjectId'."
+	try
+	{
+		Remove-MgApplicationAppManagementPolicyAppManagementPolicyByRef -ApplicationId $ObjectId -AppManagementPolicyId $PolicyId -ErrorAction Stop
+		Write-Log -Level INFO -Message "Policy '$PolicyId' removed from application '$ObjectId' successfully."
+		Show-MsgBox -Prompt "Policy '$PolicyId' removed successfully from application '$ObjectId'." -Title "Remove Policy" -Icon Information -BoxType OKOnly
+	}
+	catch
+	{
+		$errorMessage = $_.Exception.Message
+		Write-Log -Level ERROR -Message "Failed to remove policy '$PolicyId' from application '$ObjectId': $errorMessage"
+		Show-MsgBox -Prompt "Failed to remove policy. Error: $errorMessage" -Title "Remove Policy Error" -Icon Critical -BoxType OKOnly
+	}
+}
+
 function New-AppManagementPolicy
 {
 	[CmdletBinding()]
