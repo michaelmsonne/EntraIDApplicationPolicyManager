@@ -2834,6 +2834,64 @@ $btnUpdate_Click = {
 			}
 		}
 		
+		# customPasswordLifetime
+		$customPwdLifetimeInput = $txtCustomPasswordLifetime.Text
+		if ($null -eq $customPwdLifetimeInput) { $customPwdLifetimeInput = "" }
+		if ($customPwdLifetimeInput -is [array]) { $customPwdLifetimeInput = $customPwdLifetimeInput -join '' }
+		$customPwdLifetimeInput = $customPwdLifetimeInput.ToString().Trim()
+		if ($customPwdLifetimeInput -match '^\d+$')
+		{
+			$customPwdLifetime = "P$customPwdLifetimeInput" + "D"
+		}
+		else
+		{
+			$customPwdLifetime = $customPwdLifetimeInput
+		}
+		if ($customPwdLifetimeInput -and -not $customPwdLifetime)
+		{
+			[System.Windows.Forms.MessageBox]::Show("Invalid custom password lifetime. Use a number (days) or ISO 8601 duration (e.g. P90D).", "Input Error",
+				[System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+			return
+		}
+		if ($customPwdLifetime)
+		{
+			$passwordCredentials += @{
+				restrictionType					    = "customPasswordLifetime"
+				maxLifetime						    = $customPwdLifetime
+				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpCustomPasswordDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+				state							    = "enabled"
+			}
+		}
+		
+		# symmetricKeyLifetime
+		$symmetricKeyLifetimeInput = $txtSymmetricKeyLifetime.Text
+		if ($null -eq $symmetricKeyLifetimeInput) { $symmetricKeyLifetimeInput = "" }
+		if ($symmetricKeyLifetimeInput -is [array]) { $symmetricKeyLifetimeInput = $symmetricKeyLifetimeInput -join '' }
+		$symmetricKeyLifetimeInput = $symmetricKeyLifetimeInput.ToString().Trim()
+		if ($symmetricKeyLifetimeInput -match '^\d+$')
+		{
+			$symmetricKeyLifetime = "P$symmetricKeyLifetimeInput" + "D"
+		}
+		else
+		{
+			$symmetricKeyLifetime = $symmetricKeyLifetimeInput
+		}
+		if ($symmetricKeyLifetimeInput -and -not $symmetricKeyLifetime)
+		{
+			[System.Windows.Forms.MessageBox]::Show("Invalid symmetric key lifetime. Use a number (days) or ISO 8601 duration (e.g. P90D).", "Input Error",
+				[System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+			return
+		}
+		if ($symmetricKeyLifetime)
+		{
+			$passwordCredentials += @{
+				restrictionType					    = "symmetricKeyLifetime"
+				maxLifetime						    = $symmetricKeyLifetime
+				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpSymmetricKeyDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+				state							    = "enabled"
+			}
+		}
+		
 		# passwordAddition
 		$pwdAdditionLifetimeInput = $txtPwdAdditionLifetime.Text
 		if ($null -eq $pwdAdditionLifetimeInput) { $pwdAdditionLifetimeInput = "" }
@@ -2856,13 +2914,12 @@ $btnUpdate_Click = {
 		if ($pwdAdditionLifetime)
 		{
 			$passwordCredentials += @{
-				restrictionType = "passwordAddition"
-				maxLifetime	    = $pwdAdditionLifetime
+				restrictionType					    = "passwordAddition"
+				maxLifetime						    = $pwdAdditionLifetime
 				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpPwdDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
-				state		    = "enabled"
+				state							    = "enabled"
 			}
 		}
-		
 		
 		# customPasswordAddition
 		$customPwdAdditionLifetimeInput = $txtCustomPwdAdditionLifetime.Text
@@ -2886,13 +2943,13 @@ $btnUpdate_Click = {
 		if ($customPwdAdditionLifetime)
 		{
 			$passwordCredentials += @{
-				restrictionType = "customPasswordAddition"
-				maxLifetime	    = $customPwdAdditionLifetime
+				restrictionType					    = "customPasswordAddition"
+				maxLifetime						    = $customPwdAdditionLifetime
 				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpCustomPasswordDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
-				state		    = "enabled"
+				state							    = "enabled"
 			}
 		}
-				
+		
 		# symmetricKeyAddition
 		$symmetricKeyAdditionLifetimeInput = $txtSymmetricKeyAdditionLifetime.Text
 		if ($null -eq $symmetricKeyAdditionLifetimeInput) { $symmetricKeyAdditionLifetimeInput = "" }
@@ -2915,13 +2972,12 @@ $btnUpdate_Click = {
 		if ($symmetricKeyAdditionLifetime)
 		{
 			$passwordCredentials += @{
-				restrictionType = "symmetricKeyAddition"
-				maxLifetime	    = $symmetricKeyAdditionLifetime
+				restrictionType					    = "symmetricKeyAddition"
+				maxLifetime						    = $symmetricKeyAdditionLifetime
 				restrictForAppsCreatedAfterDateTime = [System.DateTime]::Parse($dtpSymmetricKeyDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ"))
-				state		    = "enabled"
+				state							    = "enabled"
 			}
 		}
-		
 		
 		# Key Credentials Restrictions
 		$keyCredentials = @()

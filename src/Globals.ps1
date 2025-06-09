@@ -999,6 +999,14 @@ function Load-DefaultPolicy
 		$txtDefaultPolicyDescription.Text = $policy.Description
 		$chkEnabled.Checked = $policy.isEnabled
 		
+		# Show the raw JSON data for the policy
+		$txtDetails.Text = ($policy | ConvertTo-Json -Depth 10)
+		
+		<#
+		$txtDefaultPolicyDisplayName.Text = $policy.DisplayName
+		$txtDefaultPolicyDescription.Text = $policy.Description
+		$chkEnabled.Checked = $policy.isEnabled
+		
 		$details = "Policy loaded successfully.`r`n" +
 		"ID: $($policy.Id)`r`n" +
 		"IsEnabled: $($policy.isEnabled)`r`n" +
@@ -1008,6 +1016,7 @@ function Load-DefaultPolicy
 		($policy.ServicePrincipalRestrictions.PasswordCredentials | Format-Table | Out-String)
 		
 		$txtDetails.Text = $details
+		#>
 	}
 	catch
 	{
