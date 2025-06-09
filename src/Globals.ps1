@@ -910,15 +910,15 @@ function Get-AppAssignedPolicies
 		}
 		else
 		{
-			Write-Log -Level INFO -Message "No policies are assigned to Application ID '$AppId'."
+			Write-Log -Level INFO -Message "No App Protection policies are assigned to Application ID '$AppId'."
 			
-			return "No policies are assigned to Application ID '$AppId'."
+			return "No App Protection policies are assigned to Application ID '$AppId'."
 		}
 	}
 	catch
 	{
-		Write-Log -Level ERROR -Message "Error retrieving assigned policies for Application ID '$AppId' : $($_.Exception.Message)"
+		Write-Log -Level ERROR -Message "Error retrieving assigned App Protection policies for Application ID '$AppId' : $($_.Exception.Message)"
 		
-		throw "Error retrieving assigned policies for Application ID '$AppId' : $($_.Exception.Message)"
+		throw "Error retrieving assigned App Protection policies for Application ID '$AppId' : $($_.Exception.Message)"
 	}
 }
