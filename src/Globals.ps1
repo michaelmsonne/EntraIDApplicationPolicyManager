@@ -994,6 +994,7 @@ function Load-DefaultPolicy
 	try
 	{
 		$policy = Get-MgPolicyDefaultAppManagementPolicy -ErrorAction Stop
+		
 		$txtDefaultPolicyDisplayName.Text = $policy.DisplayName
 		$txtDefaultPolicyDescription.Text = $policy.Description
 		$chkEnabled.Checked = $policy.isEnabled
@@ -1005,6 +1006,7 @@ function Load-DefaultPolicy
 		($policy.applicationRestrictions.PasswordCredentials | Format-Table | Out-String) + "`r`n" +
 		"Enterprise App Restrictions:" + "`r`n" +
 		($policy.ServicePrincipalRestrictions.PasswordCredentials | Format-Table | Out-String)
+		
 		$txtDetails.Text = $details
 	}
 	catch
