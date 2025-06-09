@@ -667,7 +667,7 @@ function Get-PolicyList
 	{
 		Write-Log -Level INFO -Message "Retrieving app management policies from Entra ID..."
 		$policyList = Get-MgPolicyAppManagementPolicy -All -ErrorAction Stop
-		Write-Log -Level INFO -Message "Retrieved $($policyList.Count) app management policies."
+		Write-Log -Level INFO -Message "Retrieved a total of $($policyList.Count)(s) app management policies."
 		return $policyList
 	}
 	catch
@@ -696,10 +696,20 @@ function Assign-AppManagementPolicy
 		}
 		New-MgApplicationAppManagementPolicyByRef -ApplicationId $ObjectId -BodyParameter $body -ErrorAction Stop
 		Write-Log -Level INFO -Message "Policy '$PolicyId' assigned to application '$ObjectId' successfully."
+		
+		Show-MsgBox -Prompt "Policy '$policyId' assigned successfully to application '$objectId'." -Title "Assign Policy" -Icon Information -BoxType OKOnly
 	}
 	catch
 	{
-		Write-Log -Level ERROR -Message "Failed to assign policy: $($_.Exception.Message)"
+		$errorMessage = $_.Exception.Message
+		if ($errorMessage -match "appManagementPolicies" -and $errorMessage -match "(already exist|uniqueness violation)")
+		{
+			Write-Log -Level INFO -Message "Policy '$PolicyId' is already assigned to application '$ObjectId'. Duplicate assignments are not permitted."
+		}
+		else
+		{
+			Write-Log -Level ERROR -Message "Failed to assign policy: $errorMessage"
+		}
 	}
 }
 
