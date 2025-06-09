@@ -1930,7 +1930,7 @@ $buttonConnectMicrosoftGraph_Click={
 				$labelConnectionStatus.ForeColor = 'Green'
 				
 				# Load application identityes after connected
-				Get-managedIdentities
+				Get-ApplicationsFromEntraID
 				
 				# Update button text
 				$buttonConnectMicrosoftGraph.Text = "Disconnect Microsoft Graph"
@@ -1966,7 +1966,7 @@ function Update-NumberOfManagedIdentityCountLabel
 	$labelManagedIdentityesCount.Text = "Applications found: " + $checkedlistboxListOfApplications.Items.Count
 }
 
-function Get-ManagedIdentities
+function Get-ApplicationsFromEntraID
 {
 	# Clear current data in the CheckedListBox to not keep old items
 	$checkedlistboxListOfApplications.Items.Clear()
@@ -2053,7 +2053,7 @@ function Search-Applications
 
 $buttonReloadManagedIdentityList_Click={
 	# Get data
-	Get-managedIdentities
+	Get-ApplicationsFromEntraID
 }
 
 $checkedlistboxListOfApplications_ItemCheck=[System.Windows.Forms.ItemCheckEventHandler]{
