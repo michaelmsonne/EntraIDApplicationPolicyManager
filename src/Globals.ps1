@@ -994,8 +994,8 @@ function Load-DefaultPolicy
 	try
 	{
 		$policy = Get-MgPolicyDefaultAppManagementPolicy -ErrorAction Stop
-		$txtDisplayName.Text = $policy.DisplayName
-		$txtDescription.Text = $policy.Description
+		$txtDefaultPolicyDisplayName.Text = $policy.DisplayName
+		$txtDefaultPolicyDescription.Text = $policy.Description
 		$chkEnabled.Checked = $policy.isEnabled
 		
 		$details = "Policy loaded successfully.`r`n" +
