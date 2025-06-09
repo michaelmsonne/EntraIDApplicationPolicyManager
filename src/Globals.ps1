@@ -927,3 +927,62 @@ function Get-AppAssignedPolicies
 		throw "Error retrieving assigned App Protection policies for Application ID '$AppId' : $($_.Exception.Message)"
 	}
 }
+
+function Create-DevPolicy
+{
+	$params = @{
+		displayName  = "Development App Policy"
+		description  = "Allows use of Client Secrets for Dev apps"
+		isEnabled    = $true
+		restrictions = @{
+			passwordCredentials = @(
+				@{
+					restrictionType = "passwordAddition"
+					state		    = "disabled"
+					maxLifetime	    = $null
+				}
+			)
+		}
+	}
+	
+	try
+	{
+		$newPolicy = New-MgPolicyAppManagementPolicy -BodyParameter $params -ErrorAction Stop
+		Write-Log -Level INFO -Message "Development App Policy created successfully. Policy ID: $($newPolicy.Id)"
+		Show-MsgBox -Prompt "Development App Policy created successfully." -Title "Create Dev Policy" -Icon Information -BoxType OKOnly
+	}
+	catch
+	{
+		$errorMessage = $_.Exception.Message
+		
+		# Log
+		Write-Log -Level ERROR -Message "Failed to create Development App Policy: $errorMessage"
+		
+		Show-MsgBox -Prompt "Failed to create Development App Policy: $errorMessage" -Title "Error Creating Dev Policy" -Icon Critical -BoxType OKOnly
+	}
+}
+
+function Get-DefaultAppProtectionPolicy
+{
+	try
+	{
+		# Log
+		Write-Log -Level INFO -Message "Loading default Policy from Entra ID..."
+		
+		$policy = Get-MgPolicyDefaultAppManagementPolicy -ErrorAction Stop
+		
+		# Log
+		Write-Log -Level INFO -Message "Loaded default Policy from Entra ID."
+		
+		return $policy
+	}
+	catch
+	{
+		Show-MsgBox -Prompt "Failed to retrieve default app protection policy: $($_.Exception.Message)" -Title "Get Policy Error" -Icon Critical -BoxType OKOnly
+		
+		# Log
+		Write-Log -Level ERROR -Message "Failed to retrieve default app protection policy: $($_.Exception.Message)"
+		
+		return $null
+	}
+}
