@@ -28,6 +28,11 @@ $global:ToolName = "Entra ID Application Management Policy Manager"
 $global:AuthorEmail = ""
 $global:AuthorCompany = "Sonne´s Cloud"
 
+$global:GitHubProfileURL = "https://github.com/michaelmsonne/"
+$global:BlogURL = "https://blog.sonnes.cloud"
+$global:LinkedInURL = "https://www.linkedin.com/in/michaelmsonne/"
+$global:BuyMeACoffieURL = "https://buymeacoffee.com/sonnes"
+
 #Get username and domain for account running this tool
 $global:UserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 
