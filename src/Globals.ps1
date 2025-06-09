@@ -987,3 +987,28 @@ function Get-DefaultAppProtectionPolicy
 		return $null
 	}
 }
+
+# Function: Load the default tenant policy details
+function Load-DefaultPolicy
+{
+	try
+	{
+		$policy = Get-MgPolicyDefaultAppManagementPolicy -ErrorAction Stop
+		$txtDisplayName.Text = $policy.DisplayName
+		$txtDescription.Text = $policy.Description
+		$chkEnabled.Checked = $policy.isEnabled
+		
+		$details = "Policy loaded successfully.`r`n" +
+		"ID: $($policy.Id)`r`n" +
+		"IsEnabled: $($policy.isEnabled)`r`n" +
+		"Registered App Restrictions:" + "`r`n" +
+		($policy.applicationRestrictions.PasswordCredentials | Format-Table | Out-String) + "`r`n" +
+		"Enterprise App Restrictions:" + "`r`n" +
+		($policy.ServicePrincipalRestrictions.PasswordCredentials | Format-Table | Out-String)
+		$txtDetails.Text = $details
+	}
+	catch
+	{
+		$txtDetails.Text = "Error loading default policy: $($_.Exception.Message)"
+	}
+}
