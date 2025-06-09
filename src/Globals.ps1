@@ -667,7 +667,7 @@ function Get-PolicyList
 	{
 		Write-Log -Level INFO -Message "Retrieving app management policies from Entra ID..."
 		$policyList = Get-MgPolicyAppManagementPolicy -All -ErrorAction Stop
-		Write-Log -Level INFO -Message "Retrieved a total of $($policyList.Count)(s) app management policies."
+		Write-Log -Level INFO -Message "Retrieved a total of $($policyList.Count) app management policies."
 		return $policyList
 	}
 	catch

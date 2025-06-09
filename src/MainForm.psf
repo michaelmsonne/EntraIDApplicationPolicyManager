@@ -2417,9 +2417,16 @@ $buttonGetAssignedPolicy_Click = {
 		
 		if ($app.appManagementPolicies)
 		{
-			# Build a list of policies in the form "DisplayName (PolicyId)"
 			$policyList = $app.appManagementPolicies | ForEach-Object {
-				"$($_.DisplayName) ($($_.Id))"
+				# Format the JSON with depth 10
+				$jsonRestrictions = $_.Restrictions | ConvertTo-Json -Depth 10
+				$details = "Name: $($_.DisplayName)`r`n" +
+				"ID: $($_.Id)`r`n" +
+				"Description: $($_.Description)`r`n" +
+				"Enabled: $($_.IsEnabled)`r`n" +
+				"Restrictions: `r`n$jsonRestrictions`r`n" +
+				"----------------------"
+				$details
 			}
 			$result = $policyList -join "`r`n"
 		}
@@ -2428,7 +2435,8 @@ $buttonGetAssignedPolicy_Click = {
 			$result = "No policies are assigned to Application ID '$appId'."
 		}
 		
-		# Display the result
+		# Ensure the textbox is multiline so formatting is preserved
+		$textboxAssingedSecretsAndPolicy.Multiline = $true
 		$textboxAssingedSecretsAndPolicy.Text = $result
 	}
 	catch
