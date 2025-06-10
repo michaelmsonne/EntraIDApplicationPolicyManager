@@ -1,19 +1,19 @@
-# TEMPLATE
+# EntraIDApplicationPolicyManager
 
 <p align="center">
   <a href="https://www.linkedin.com/in/michaelmsonne/"><img alt="Made by" src="https://img.shields.io/static/v1?label=made%20by&message=Michael%20Morten%20Sonne&color=04D361"></a>
-  <a href="https://github.com/michaelmsonne/TEMPLATE"><img src="https://img.shields.io/github/languages/top/TEMPLATE/GitHubBackupTool.svg"></a>
-  <a href="https://github.com/michaelmsonne/TEMPLATE"><img src="https://img.shields.io/github/languages/code-size/TEMPLATE/GitHubBackupTool.svg"></a>
-  <a href="https://github.com/michaelmsonne/TEMPLATE"><img src="https://img.shields.io/github/downloads/michaelmsonne/TEMPLATE/total.svg"></a><br>
+  <a href="https://github.com/michaelmsonne/EntraIDApplicationPolicyManager"><img src="https://img.shields.io/github/languages/top/EntraIDApplicationPolicyManager/EntraIDApplicationPolicyManager.svg"></a>
+  <a href="https://github.com/michaelmsonne/EntraIDApplicationPolicyManager"><img src="https://img.shields.io/github/languages/code-size/EntraIDApplicationPolicyManager/EntraIDApplicationPolicyManager.svg"></a>
+  <a href="https://github.com/michaelmsonne/EntraIDApplicationPolicyManager"><img src="https://img.shields.io/github/downloads/michaelmsonne/EntraIDApplicationPolicyManager/total.svg"></a><br>
   <a href="https://www.buymeacoffee.com/sonnes" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 30px !important;width: 117px !important;"></a>
 </p>
 
 <div align="center">
-  <a href="https://github.com/michaelmsonne/TEMPLATE/issues/new?assignees=&labels=bug&template=01_BUG_REPORT.md&title=bug%3A+">Report a Bug</a>
+  <a href="https://github.com/michaelmsonne/EntraIDApplicationPolicyManager/issues/new?assignees=&labels=bug&template=01_BUG_REPORT.md&title=bug%3A+">Report a Bug</a>
   ·
-  <a href="https://github.com/michaelmsonne/TEMPLATE/issues/new?assignees=&labels=enhancement&template=02_FEATURE_REQUEST.md&title=feat%3A+">Request a Feature</a>
+  <a href="https://github.com/michaelmsonne/EntraIDApplicationPolicyManager/issues/new?assignees=&labels=enhancement&template=02_FEATURE_REQUEST.md&title=feat%3A+">Request a Feature</a>
   .
-  <a href="https://github.com/michaelmsonne/TEMPLATE/discussions">Ask a Question</a>
+  <a href="https://github.com/michaelmsonne/EntraIDApplicationPolicyManager/discussions">Ask a Question</a>
 </div>
 
 <div align="center">
@@ -49,10 +49,10 @@ Outline the file contents of the repository. It helps users navigate the codebas
 | `src`             | Source code.                                |
 | `.gitignore`      | Define what to ignore at commit time.       |
 | `CHANGELOG.md`    | List of changes to the sample.              |
-| `CONTRIBUTING.md` | Guidelines for contributing to the TEMPLATE.|
+| `CONTRIBUTING.md` | Guidelines for contributing to the EntraIDApplicationPolicyManager.|
 | `README.md`       | This README file.                           |
 | `SECURITY.md`     | This README file.                           |
-| `LICENSE`         | The license for the TEMPLATE.               |
+| `LICENSE`         | The license for the EntraIDApplicationPolicyManager.               |
 
 ## 🚀 Features
 
@@ -171,7 +171,7 @@ Thanks.
 
 Reach out to the maintainer at one of the following places:
 
-- [GitHub discussions](https://github.com/michaelmsonne/TEMPLATE/discussions)
+- [GitHub discussions](https://github.com/michaelmsonne/EntraIDApplicationPolicyManager/discussions)
 - The email which is located [in GitHub profile](https://github.com/michaelmsonne)
 
 # 📄 License
