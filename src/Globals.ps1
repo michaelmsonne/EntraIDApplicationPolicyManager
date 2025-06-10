@@ -24,7 +24,7 @@ $global:filteredApplicationIdentities
 
 $global:FormVersion = "1.0.0.0"
 $global:Author = "Michael Morten Sonne"
-$global:ToolName = "Entra ID Application Management Policy Manager"
+$global:ToolName = "Entra ID Application Policy Manager"
 $global:AuthorEmail = ""
 $global:AuthorCompany = "Sonne´s Cloud"
 
