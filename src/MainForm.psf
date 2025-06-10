@@ -1154,7 +1154,7 @@ $formEntraIDApplicationMa_Load={
 	CheckLogPath
 	
 	# Log
-	Write-Log -Level INFO -Message "The application $ToolName is started"
+	Write-Log -Level INFO -Message "The application $global:ToolName is started"
 	
 	# 
 	Get-CurrentExecutionFilename
@@ -1180,7 +1180,7 @@ $formEntraIDApplicationMa_Load={
 	$ConnectedState = $false
 	
 	# Set form text
-	$formManagedIdentityPermi.Text = "$ToolName v. $FormVersion"
+	$formEntraIDApplicationMa.Text = "$ToolName v. $FormVersion"
 	$toolstripstatuslabelMain_CreatedBy.Text = "Created by: $Author"
 }
 
@@ -3499,6 +3499,7 @@ $guideToolStripMenuItem_Click={
 	Write-Log -Level INFO -Message "The user clicked on the link for more information about the tool and guide on the website https://github.com/michaelmsonne/"
 	
 }
+
 ]]></Code>
   <Mode>1</Mode>
   <Assemblies />
