@@ -32,6 +32,7 @@ $global:GitHubProfileURL = "https://github.com/michaelmsonne/"
 $global:BlogURL = "https://blog.sonnes.cloud"
 $global:LinkedInURL = "https://www.linkedin.com/in/michaelmsonne/"
 $global:BuyMeACoffieURL = "https://buymeacoffee.com/sonnes"
+$global:GitHubRepoURL = "https://github.com/michaelmsonne/EntraIDApplicationPolicyManager"
 
 #Get username and domain for account running this tool
 $global:UserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
