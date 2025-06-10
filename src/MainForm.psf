@@ -2412,7 +2412,7 @@ $buttonGetAssignedPolicy_Click = {
 	$appId = $textboxselectedIdentityID.Text.Trim()
 	if ([string]::IsNullOrEmpty($appId))
 	{
-		Show-MsgBox -Prompt "Please provide an Application/Managed Identity ID." -Title "Get Assigned Policy" -Icon Exclamation -BoxType OKOnly
+		Show-MsgBox -Prompt "Please provide an Application ID." -Title "Get Assigned Policy" -Icon Exclamation -BoxType OKOnly
 		return
 	}
 	
