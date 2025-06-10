@@ -3450,6 +3450,11 @@ $btnUpdate_Click = {
 		
 		try
 		{
+			# Log 
+			
+			Write-Log -Level INFO -Message "Calling Graph to update policy..."
+			
+			# Do task
 			Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params -ErrorAction Stop -Verbose
 			
 			Write-Log -Level INFO -Message "Policy updated successfully."
@@ -3458,7 +3463,6 @@ $btnUpdate_Click = {
 			Load-CurrentDefaultApplicationPolicy
 			
 			Show-MsgBox -Prompt "Policy updated successfully." -Title "Policy Update" -Icon Information -BoxType OKOnly
-			
 		}
 		catch
 		{
