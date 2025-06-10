@@ -406,7 +406,7 @@ function Get-ScriptDirectory
 	}
 }
 
-function Get-ManagedIdentityCount # TODO Change to applications supported for this
+function Get-ApplicationsCount
 {
 	# Get data to global data to keep
 	$global:ApplicationIdentities = Get-MgApplication -All
@@ -682,7 +682,7 @@ function Get-PolicyList
 	}
 }
 
-function Assign-AppManagementPolicy
+function Assign-CustomAppManagementPolicyToApp
 {
 	[CmdletBinding()]
 	param (
@@ -718,7 +718,7 @@ function Assign-AppManagementPolicy
 	}
 }
 
-function Remove-AppManagementPolicy
+function Remove-CustomAppManagementPolicyAssignmentFromApp
 {
 	[CmdletBinding()]
 	param (
@@ -764,6 +764,8 @@ function New-AppManagementPolicy
 		[Parameter(Mandatory = $false)]
 		[bool]$Enabled = $true
 	)
+	
+	# TODO UPDATE TO SUPPORT ALL FEATURES
 	
 	# Convert lifetime values to ISO 8601 if necessary
 	if ($PasswordMaxLifetime -match '^\d+$')
@@ -963,37 +965,18 @@ function Create-DevPolicy
 	}
 }
 
-function Get-DefaultAppProtectionPolicy
-{
-	try
-	{
-		# Log
-		Write-Log -Level INFO -Message "Loading default Policy from Entra ID..."
-		
-		$policy = Get-MgPolicyDefaultAppManagementPolicy -ErrorAction Stop
-		
-		# Log
-		Write-Log -Level INFO -Message "Loaded default Policy from Entra ID."
-		
-		return $policy
-	}
-	catch
-	{
-		Show-MsgBox -Prompt "Failed to retrieve default app protection policy: $($_.Exception.Message)" -Title "Get Policy Error" -Icon Critical -BoxType OKOnly
-		
-		# Log
-		Write-Log -Level ERROR -Message "Failed to retrieve default app protection policy: $($_.Exception.Message)"
-		
-		return $null
-	}
-}
-
 # Function: Load the default tenant policy details
-function Load-DefaultPolicy
+function Load-CurrentDefaultApplicationPolicy
 {
 	try
 	{
+		# Log
+		Write-Log -Level INFO -Message "Loading Default app management tenant policy from Entra ID..."
+		
 		$policy = Get-MgPolicyDefaultAppManagementPolicy -ErrorAction Stop
+		
+		# Log
+		Write-Log -Level INFO -Message "Loaded Default app management tenant policy from Entra ID."
 		
 		$txtDefaultPolicyDisplayName.Text = $policy.DisplayName
 		$txtDefaultPolicyDescription.Text = $policy.Description
@@ -1017,9 +1000,18 @@ function Load-DefaultPolicy
 		
 		$txtDetails.Text = $details
 		#>
+		
+		return $policy
 	}
 	catch
 	{
+		Show-MsgBox -Prompt "Failed to retrieve default app protection policy: $($_.Exception.Message)" -Title "Get Policy Error" -Icon Critical -BoxType OKOnly
+		
 		$txtDetails.Text = "Error loading default policy: $($_.Exception.Message)"
+		
+		# Log
+		Write-Log -Level ERROR -Message "Failed to retrieve default app protection policy: $($_.Exception.Message)"
+		
+		return $null
 	}
 }
