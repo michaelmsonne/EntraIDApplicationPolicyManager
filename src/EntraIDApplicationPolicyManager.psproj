@@ -20,5 +20,6 @@
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Modules_ps1">Class\Modules.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-GitHubFunctions_ps1">Class\GitHubFunctions.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomApplicationPolicy_ps1">Class\CustomApplicationPolicy.ps1</File>
+    <File Build="0" Shared="False" ReferenceFunction="Invoke-AppManagementPoliciesAssignment_ps1">Class\AppManagementPoliciesAssignment.ps1</File>
   </Files>
 </Project>
