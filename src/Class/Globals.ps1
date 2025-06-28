@@ -406,22 +406,23 @@ function Get-TenantId
 		[string]$LookupInputData
 	)
 	
-	# Log the received parameters
+	if ([string]::IsNullOrWhiteSpace($LookupInputData))
+	{
+		Write-Log -Level ERROR -Message "Lookup input is empty or null."
+		return $null
+	}
+	
 	Write-Log -Level INFO -Message "Trying to get tenant data for: '$LookupInputData'"
 	
 	# Check if the input is a domain name or tenant ID
 	if ($LookupInputData -match '^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$')
 	{
 		Write-Log -Level INFO -Message "Input '$LookupInputData' is a domain"
-		
-		# Input is a domain name
 		$url = "https://login.microsoftonline.com/$LookupInputData/.well-known/openid-configuration"
 	}
 	else
 	{
 		Write-Log -Level INFO -Message "Input '$LookupInputData' is a tenant ID"
-		
-		# Input is a tenant ID
 		$url = "https://login.microsoftonline.com/$LookupInputData/v2.0/.well-known/openid-configuration"
 	}
 	
@@ -429,23 +430,21 @@ function Get-TenantId
 	
 	try
 	{
-		# Send GET request to get data needed
 		$response = Invoke-RestMethod -Uri $url -Method Get
 		
-		# Log (debug data only)
-		#Write-Log -Level INFO -Message "Response: $($response | Out-String)"
-		
-		# Extract the tenant ID from the issuer field
 		$tenantId = $response.issuer -replace 'https://sts.windows.net/', '' -replace 'https://login.microsoftonline.com/', '' -replace '/v2.0', '' -replace '/', ''
 		
-		# Log
 		Write-Log -Level INFO -Message "Extracted Tenant ID: '$tenantId' from GET response"
 		
-		# Return data
+		if ([string]::IsNullOrWhiteSpace($tenantId))
+		{
+			Write-Log -Level ERROR -Message "Tenant ID could not be extracted from the response."
+			return $null
+		}
+		
 		return $tenantId
 	}
 	catch [System.Net.WebException] {
-		# Log specific web exception
 		Write-Log -Level ERROR -Message "WebException occurred: $($_.Exception.Message)"
 		Write-Log -Level ERROR -Message "Status: $($_.Exception.Status)"
 		if ($_.Exception.Response)
@@ -458,7 +457,6 @@ function Get-TenantId
 		return $null
 	}
 	catch [System.Exception] {
-		# Log general exception
 		Write-Log -Level ERROR -Message "Failed to retrieve tenant ID for input: $LookupInputData. Error: $($_.Exception.Message)"
 		return $null
 	}

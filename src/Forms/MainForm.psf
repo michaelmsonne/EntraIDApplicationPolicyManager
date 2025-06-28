@@ -2214,26 +2214,32 @@ $buttonLookupTenantID_Click = {
 	
 	try
 	{
+		if ([string]::IsNullOrWhiteSpace($LookupInput))
+		{
+			$msg = "Please enter a domain name or tenant ID."
+			[System.Windows.Forms.MessageBox]::Show($msg, "Input Required", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+			Write-Log -Level INFO -Message $msg
+			return
+		}
+		
 		# Lookup data
 		$tenantId = Get-TenantId -LookupInputData $LookupInput
 		
 		if ($tenantId)
 		{
-			# Log
 			Write-Log -Level INFO -Message "Tenant ID for '$LookupInput' is: '$tenantId'"
 		}
 		else
 		{
-			# Log
-			Write-Log -Level INFO -Message "Failed to retrieve tenant ID for '$LookupInput'."
+			$msg = "Failed to retrieve tenant ID for '$LookupInput'. Please check the input and your network connection."
+			[System.Windows.Forms.MessageBox]::Show($msg, "Lookup Failed", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+			Write-Log -Level INFO -Message $msg
 		}
 	}
 	catch
 	{
-		# Log
 		$errorMessage = "Error: $($_.Exception.Message)"
-		[System.Windows.Forms.MessageBox]::Show($errorMessage)
-		
+		[System.Windows.Forms.MessageBox]::Show($errorMessage, "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
 		Write-Log -Level ERROR -Message $errorMessage
 	}
 }
