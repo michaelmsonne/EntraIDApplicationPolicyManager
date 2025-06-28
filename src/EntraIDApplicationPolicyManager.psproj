@@ -15,11 +15,12 @@
     <File Build="1">.gitignore</File>
     <File Build="0" ReferenceFunction="Show-AboutForm_psf">Forms\AboutForm.psf</File>
     <File Build="0" ReferenceFunction="Show-ChangelogForm_psf">Forms\ChangelogForm.psf</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-TenantwideApplicationPolicy_ps1">Class\TenantwideApplicationPolicy.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-GlobalAppManagementPolicy_ps1">Class\GlobalAppManagementPolicy.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Logging_ps1">Class\Logging.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Modules_ps1">Class\Modules.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-GitHubFunctions_ps1">Class\GitHubFunctions.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomAppManagementPolicy_ps1">Class\CustomAppManagementPolicy.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomAppManagementPolicyAssignment_ps1">Class\CustomAppManagementPolicyAssignment.ps1</File>
+    <File Build="0" Shared="False" ReferenceFunction="Invoke-Applications_ps1">Class\Applications.ps1</File>
   </Files>
 </Project>

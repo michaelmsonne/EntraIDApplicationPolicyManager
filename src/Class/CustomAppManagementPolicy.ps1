@@ -100,3 +100,51 @@ function New-AppManagementPolicy
 		Write-Log -Level ERROR -Message "Error creating app management policy: $($_.Exception.Message)"
 	}
 }
+
+function Get-AppAssignedPolicies
+{
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $true)]
+		[string]$AppId
+	)
+	
+	try
+	{
+		Write-Log -Level INFO -Message "Getting assigned App Protection Policy for Application with Id: '$AppId'"
+		
+		# Retrieve the application with its assigned policies expanded
+		$app = Get-MgApplication -ApplicationId $AppId -ExpandProperty appManagementPolicies -ErrorAction Stop
+		
+		if ($app.appManagementPolicies)
+		{
+			$policyList = $app.appManagementPolicies | ForEach-Object {
+				# Format the JSON with depth 10
+				$jsonRestrictions = $_.Restrictions | ConvertTo-Json -Depth 10
+				$details = "Name: $($_.DisplayName)`r`n" +
+				"ID: $($_.Id)`r`n" +
+				"Description: $($_.Description)`r`n" +
+				"Enabled: $($_.IsEnabled)`r`n" +
+				"Restrictions: `r`n$jsonRestrictions`r`n" +
+				"----------------------"
+				$details
+			}
+			
+			Write-Log -Level INFO -Message "Received assigned App Protection Policy for Application with Id: '$AppId'"
+			
+			return $policyList -join "`r`n"
+		}
+		else
+		{
+			Write-Log -Level INFO -Message "No App Protection policies are assigned to Application ID '$AppId'."
+			
+			return "No App Protection policies are assigned to Application ID '$AppId'."
+		}
+	}
+	catch
+	{
+		Write-Log -Level ERROR -Message "Error retrieving assigned App Protection policies for Application ID '$AppId' : $($_.Exception.Message)"
+		
+		throw "Error retrieving assigned App Protection policies for Application ID '$AppId' : $($_.Exception.Message)"
+	}
+}
