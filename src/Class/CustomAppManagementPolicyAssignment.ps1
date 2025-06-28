@@ -14,7 +14,7 @@ The ID of the policy to remove from the application.
 .EXAMPLE
 Remove-AppManagementPolicyAssignment -ObjectId '12345' -PolicyId '67890'
 #>
-function Remove-CustomAppManagementPolicyAssignmentFromApp
+function Remove-AppManagementPolicyAssignment
 {
 	[CmdletBinding()]
 	param (
@@ -56,7 +56,7 @@ The policy object to assign to the application.
 .EXAMPLE
 New-AppManagementPolicyAssignment -Policy $policy -ObjectId '12345'
 #>
-function New-CustomAppManagementPolicyAssignmentFromApp
+function New-AppManagementPolicyAssignment
 {
 	[CmdletBinding()]
 	param (

@@ -482,4 +482,3 @@ function Get-PolicyList
 		return @()
 	}
 }
-

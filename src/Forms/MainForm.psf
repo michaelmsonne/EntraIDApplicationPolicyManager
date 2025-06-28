@@ -2225,7 +2225,7 @@ $buttonAssignPolicyToSelect_Click={
 		try
 		{
 			# Use -ErrorAction Stop to force termination on errors.
-			New-CustomAppManagementPolicyAssignmentFromApp -ObjectId $objectId -PolicyId $policyId -ErrorAction Stop
+			New-AppManagementPolicyAssignment -ObjectId $objectId -PolicyId $policyId -ErrorAction Stop
 		}
 		catch
 		{
@@ -2436,7 +2436,7 @@ $buttonRemovedPolicyFromSel_Click={
 		$confirmation = Show-MsgBox -Prompt "Are you sure you want to remove policy '$policyId' from application '$objectId'?" -Title "Confirm Remove Policy" -Icon Question -BoxType YesNo -DefaultButton 2
 		if ($confirmation -eq "Yes")
 		{
-			Remove-CustomAppManagementPolicyAssignmentFromApp -ObjectId $objectId -PolicyId $policyId
+			Remove-AppManagementPolicyAssignment -ObjectId $objectId -PolicyId $policyId
 			$buttonRefreshPolicies.PerformClick() # Refresh the policy list if needed
 		}
 	}
