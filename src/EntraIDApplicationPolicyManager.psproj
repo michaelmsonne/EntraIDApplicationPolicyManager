@@ -4,18 +4,20 @@
   <ProjectType>0</ProjectType>
   <RememberPowerShellVersion>True</RememberPowerShellVersion>
   <PowerShellVersion>Local Machine - PowerShell V5 (32 Bit)</PowerShellVersion>
-  <Folders />
+  <Folders>
+    <Folder>Class</Folder>
+  </Folders>
   <Files>
     <File Build="0">Startup.pss</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-Globals_ps1">Globals.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-Globals_ps1">Class\Globals.ps1</File>
     <File Build="0" ReferenceFunction="Show-MainForm_psf">MainForm.psf</File>
     <File Build="1">.gitignore</File>
     <File Build="0" ReferenceFunction="Show-AboutForm_psf">AboutForm.psf</File>
     <File Build="0" ReferenceFunction="Show-ChangelogForm_psf">ChangelogForm.psf</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-TenantwideApplicationPolicy_ps1">TenantwideApplicationPolicy.ps1</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-Logging_ps1">Logging.ps1</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-Modules_ps1">Modules.ps1</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-GitHubFunctions_ps1">GitHubFunctions.ps1</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomApplicationPolicy_ps1">CustomApplicationPolicy.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-TenantwideApplicationPolicy_ps1">Class\TenantwideApplicationPolicy.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-Logging_ps1">Class\Logging.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-Modules_ps1">Class\Modules.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-GitHubFunctions_ps1">Class\GitHubFunctions.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomApplicationPolicy_ps1">Class\CustomApplicationPolicy.ps1</File>
   </Files>
 </Project>
