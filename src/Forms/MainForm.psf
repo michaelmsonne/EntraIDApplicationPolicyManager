@@ -2874,7 +2874,7 @@ $btnUpdateTenantwidePolicy_Click = {
 		
 		try
 		{
-			Write-Log -Level INFO -Message "Calling Graph to update policy..."
+			Write-Log -Level INFO -Message "Calling Graph to update tenant policy..."
 			Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params -ErrorAction Stop -Verbose
 			Write-Log -Level INFO -Message "Policy updated successfully."
 			Load-CurrentDefaultApplicationPolicy
