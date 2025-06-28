@@ -19,7 +19,7 @@
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Logging_ps1">Class\Logging.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Modules_ps1">Class\Modules.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-GitHubFunctions_ps1">Class\GitHubFunctions.ps1</File>
-    <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomApplicationPolicy_ps1">Class\CustomApplicationPolicy.ps1</File>
-    <File Build="0" Shared="False" ReferenceFunction="Invoke-AppManagementPoliciesAssignment_ps1">Class\AppManagementPoliciesAssignment.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomAppManagementPolicy_ps1">Class\CustomAppManagementPolicy.ps1</File>
+    <File Build="0" Shared="True" ReferenceFunction="Invoke-CustomAppManagementPolicyAssignment_ps1">Class\CustomAppManagementPolicyAssignment.ps1</File>
   </Files>
 </Project>
