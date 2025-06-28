@@ -34,6 +34,9 @@ $global:LinkedInURL = "https://www.linkedin.com/in/michaelmsonne/"
 $global:BuyMeACoffieURL = "https://buymeacoffee.com/sonnes"
 $global:GitHubRepoURL = "https://github.com/michaelmsonne/EntraIDApplicationPolicyManager"
 
+# Scopes needed for the tools features to work
+$global:RequiredScopes = @('Application.Read.All', 'AppRoleAssignment.ReadWrite.All', 'Policy.ReadWrite.ApplicationConfiguration')
+
 #Get username and domain for account running this tool
 $global:UserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 
@@ -306,6 +309,31 @@ function Update-Log
 	$textboxLog.ScrollToCaret()
 }
 
+<#
+Sample: Write-CreationErrorAndExit -exception $exception -roles "Security Administrator, Cloud Application Administrator"
+#>
+function Write-CreationErrorAndExit
+{
+	param (
+		$exception,
+		$roles
+	)
+	if ($exception.ErrorDetails.Message.Contains("Insufficient privileges to complete the operation") -or $exception.ErrorDetails.Message.Contains("Insufficient privileges to complete the write operation"))
+	{
+		Write-Log "Authentication error. Please ensure you are logged in and have the correct role assignments."
+		Write-Log "Minimum required roles: $roles"
+		Write-Log "Error: $($exception.ToString())"
+	}
+	else
+	{
+		Write-Log "Encountered an unexpected error during script execution."
+		Write-Log "Error: $($exception.ToString())"
+	}
+	Write-Log "Error encountered during script execution. Rerun the script with -Debug parameter for more information on failed requests."
+	
+	#Exit
+}
+
 function Show-InputBox
 {
 	param
@@ -516,12 +544,17 @@ function ConnectToGraph
 	if ($TenantId)
 	{
 		Write-Log -Level INFO -Message "Connecting to Microsoft Graph with Tenant ID: $TenantId"
-		Connect-MgGraph -TenantId $TenantId -NoWelcome -Scopes 'Application.Read.All', 'AppRoleAssignment.ReadWrite.All', 'Policy.ReadWrite.ApplicationConfiguration'
+		Write-Log -Level INFO -Message "Login screen opened. Please use your browser to sign in with an administrator account."
+		Write-Log -Level INFO "Connecting using params: -NoWelcome -Scopes '$global:RequiredScopes' -TenantId $TenantId"
+		
+		Connect-MgGraph -TenantId $TenantId -NoWelcome -Scopes $global:RequiredScopes
 	}
 	else
 	{
 		Write-Log -Level INFO -Message "Connecting to Microsoft Graph without specific Tenant ID"
-		Connect-MgGraph -NoWelcome -Scopes 'Application.Read.All', 'AppRoleAssignment.ReadWrite.All', 'Policy.ReadWrite.ApplicationConfiguration'
+		Write-Log -Level INFO -Message "Login screen opened. Please use your browser to sign in with an administrator account."
+		Write-Log -Level INFO "Connecting using params: -NoWelcome -Scopes '$global:RequiredScopes'"
+		Connect-MgGraph -NoWelcome -Scopes $global:RequiredScopes
 	}
 	
 	# Check if the connection is successful
@@ -683,7 +716,23 @@ function Get-PolicyList
 	}
 }
 
-function Assign-CustomAppManagementPolicyToApp
+<#
+.SYNOPSIS
+Assigns a new app management policy to an application.
+
+.DESCRIPTION
+This function assigns a specified app management policy to an application.
+
+.PARAMETER ObjectId
+The ID of the application to which the policy will be assigned.
+
+.PARAMETER Policy
+The policy object to assign to the application.
+
+.EXAMPLE
+New-AppManagementPolicyAssignment -Policy $policy -ObjectId '12345'
+#>
+function New-CustomAppManagementPolicyAssignmentFromApp
 {
 	[CmdletBinding()]
 	param (
@@ -719,6 +768,22 @@ function Assign-CustomAppManagementPolicyToApp
 	}
 }
 
+<#
+.SYNOPSIS
+Removes an existing app management policy assignment from an application.
+
+.DESCRIPTION
+This function removes a specified app management policy assignment from an application.
+
+.PARAMETER ObjectId
+The Óbject ID of the application from which the policy will be removed.
+
+.PARAMETER PolicyId
+The ID of the policy to remove from the application.
+
+.EXAMPLE
+Remove-AppManagementPolicyAssignment -ObjectId '12345' -PolicyId '67890'
+#>
 function Remove-CustomAppManagementPolicyAssignmentFromApp
 {
 	[CmdletBinding()]
@@ -729,18 +794,19 @@ function Remove-CustomAppManagementPolicyAssignmentFromApp
 		[string]$PolicyId
 	)
 	
-	Write-Log -Level INFO -Message "Removing Policy '$PolicyId' from Application '$ObjectId'."
+	Write-Log -Level INFO -Message "Initiating removal of policy ($PolicyId) from application ($ObjectId)."
+	
 	try
 	{
 		Remove-MgApplicationAppManagementPolicyAppManagementPolicyByRef -ApplicationId $ObjectId -AppManagementPolicyId $PolicyId -ErrorAction Stop
-		Write-Log -Level INFO -Message "Policy '$PolicyId' removed from application '$ObjectId' successfully."
-		Show-MsgBox -Prompt "Policy '$PolicyId' removed successfully from application '$ObjectId'." -Title "Remove Policy" -Icon Information -BoxType OKOnly
+		Write-Log -Level INFO -Message "Policy '$PolicyId' successfully removed from application '$ObjectId' successfully."
+		Show-MsgBox -Prompt "Policy '$PolicyId' successfully removed from application '$ObjectId'." -Title "Remove Policy" -Icon Information -BoxType OKOnly
 	}
 	catch
 	{
 		$errorMessage = $_.Exception.Message
-		Write-Log -Level ERROR -Message "Failed to remove policy '$PolicyId' from application '$ObjectId': $errorMessage"
-		Show-MsgBox -Prompt "Failed to remove policy. Error: $errorMessage" -Title "Remove Policy Error" -Icon Critical -BoxType OKOnly
+		Write-Log -Level ERROR -Message "Error removing the policy '$PolicyId' from the application '$ObjectId': $errorMessage"
+		Show-MsgBox -Prompt "Error removing the policy from the application. Details: $errorMessage" -Title "Remove Policy Error" -Icon Critical -BoxType OKOnly
 	}
 }
 
