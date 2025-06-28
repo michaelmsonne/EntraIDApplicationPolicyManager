@@ -6,14 +6,15 @@
   <PowerShellVersion>Local Machine - PowerShell V5 (32 Bit)</PowerShellVersion>
   <Folders>
     <Folder>Class</Folder>
+    <Folder>Forms</Folder>
   </Folders>
   <Files>
     <File Build="0">Startup.pss</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Globals_ps1">Class\Globals.ps1</File>
-    <File Build="0" ReferenceFunction="Show-MainForm_psf">MainForm.psf</File>
+    <File Build="0" ReferenceFunction="Show-MainForm_psf">Forms\MainForm.psf</File>
     <File Build="1">.gitignore</File>
-    <File Build="0" ReferenceFunction="Show-AboutForm_psf">AboutForm.psf</File>
-    <File Build="0" ReferenceFunction="Show-ChangelogForm_psf">ChangelogForm.psf</File>
+    <File Build="0" ReferenceFunction="Show-AboutForm_psf">Forms\AboutForm.psf</File>
+    <File Build="0" ReferenceFunction="Show-ChangelogForm_psf">Forms\ChangelogForm.psf</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-TenantwideApplicationPolicy_ps1">Class\TenantwideApplicationPolicy.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Logging_ps1">Class\Logging.ps1</File>
     <File Build="0" Shared="True" ReferenceFunction="Invoke-Modules_ps1">Class\Modules.ps1</File>
