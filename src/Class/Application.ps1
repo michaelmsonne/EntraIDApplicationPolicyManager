@@ -82,3 +82,51 @@ function Get-ApplicationsCount
 	# Return data
 	return $global:ApplicationIdentities.Count
 }
+
+function Get-ApplicationsFromEntraID
+{
+	# Clear current data in the CheckedListBox to not keep old items
+	$checkedlistboxListOfApplications.Items.Clear()
+	
+	# If connected
+	if ($global:ConnectedState)
+	{
+		# Log
+		Write-Log -Level INFO -Message "Loading list of Applications from tenant..."
+		
+		# Get all managed identities
+		$global:ApplicationIdentities = Get-MgApplication -All
+		
+		# Log
+		Write-Log -Level INFO -Message "Loaded and updated the list of discovered applications from the tenant."
+		
+		# Create a custom object with DisplayName and Id, then sort by DisplayName
+		$sortedIdentities = $ApplicationIdentities | Sort-Object DisplayName | ForEach-Object {
+			[PSCustomObject]@{
+				DisplayName = $_.DisplayName
+				Id		    = $_.Id
+			}
+		}
+		
+		# Populate the CheckedListBox with sorted managed identities
+		foreach ($identity in $sortedIdentities)
+		{
+			$checkedlistboxListOfApplications.Items.Add($identity.DisplayName)
+		}
+		
+		# Store the sorted identities in a global variable for later use
+		$global:sortedApplicationIdentities = $sortedIdentities
+		$global:filteredApplicationIdentities = $sortedIdentities
+		
+		# Log
+		Write-Log -Level INFO -Message "List of applications updated with a total of '$(Get-ApplicationsCount)' applications"
+		
+		Update-NumberOfManagedIdentityCountLabel
+	}
+	# Else if not connected
+	else
+	{
+		# Log
+		Write-Log -Level INFO -Message "Not connected - can´t load list of applications"
+	}
+}

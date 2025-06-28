@@ -30,6 +30,7 @@ $global:AuthorCompany = "Sonne´s Cloud"
 
 $global:GitHubProfileURL = "https://github.com/michaelmsonne/"
 $global:BlogURL = "https://blog.sonnes.cloud"
+$global:WebsideURL = "https://sonnes.cloud"
 $global:LinkedInURL = "https://www.linkedin.com/in/michaelmsonne/"
 $global:BuyMeACoffieURL = "https://buymeacoffee.com/sonnes"
 $global:GitHubRepoURL = "https://github.com/michaelmsonne/EntraIDApplicationPolicyManager"

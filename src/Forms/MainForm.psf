@@ -819,54 +819,6 @@ function Update-NumberOfManagedIdentityCountLabel
 	$labelManagedIdentityesCount.Text = "Applications found: " + $checkedlistboxListOfApplications.Items.Count
 }
 
-function Get-ApplicationsFromEntraID
-{
-	# Clear current data in the CheckedListBox to not keep old items
-	$checkedlistboxListOfApplications.Items.Clear()
-	
-	# If connected
-	if ($global:ConnectedState)
-	{
-		# Log
-		Write-Log -Level INFO -Message "Loading list of Applications from tenant..."
-		
-		# Get all managed identities
-		$global:ApplicationIdentities = Get-MgApplication -All
-		
-		# Log
-		Write-Log -Level INFO -Message "Loaded and updated the list of discovered applications from the tenant."
-		
-		# Create a custom object with DisplayName and Id, then sort by DisplayName
-		$sortedIdentities = $ApplicationIdentities | Sort-Object DisplayName | ForEach-Object {
-			[PSCustomObject]@{
-				DisplayName = $_.DisplayName
-				Id		    = $_.Id
-			}
-		}
-		
-		# Populate the CheckedListBox with sorted managed identities
-		foreach ($identity in $sortedIdentities)
-		{
-			$checkedlistboxListOfApplications.Items.Add($identity.DisplayName)
-		}
-		
-		# Store the sorted identities in a global variable for later use
-		$global:sortedApplicationIdentities = $sortedIdentities
-		$global:filteredApplicationIdentities = $sortedIdentities
-		
-		# Log
-		Write-Log -Level INFO -Message "List of applications updated with a total of '$(Get-ApplicationsCount)' applications"
-		
-		Update-NumberOfManagedIdentityCountLabel
-	}
-	# Else if not connected
-	else
-	{
-		# Log
-		Write-Log -Level INFO -Message "Not connected - can´t load list of applications"
-	}
-}
-
 function Update-SelectedIdentity
 {
 	param (
@@ -1394,8 +1346,6 @@ function Update-ListViewColumnSort
 	}
 }
 
-
-
 function Add-ListViewItem
 {
 <#
@@ -1507,8 +1457,6 @@ function Add-ListViewItem
 	}
 }
 
-
-
 function Update-ComboBox
 {
 <#
@@ -1598,8 +1546,6 @@ function Update-ComboBox
 		$ComboBox.ValueMember = $ValueMember
 	}
 }
-
-
 
 function Update-Chart
 {
@@ -1812,8 +1758,6 @@ function Update-Chart
 	$Series.Points.DataBindXY($XPoints, $YPoints)
 }
 
-
-
 function Clear-Chart
 {
 <#
@@ -1867,8 +1811,6 @@ function Clear-Chart
 		$ChartControl.Series[0].Points.Clear()
 	}
 }
-
-
 
 function Update-ListBox
 {
@@ -1958,8 +1900,6 @@ function Update-ListBox
 $buttonLookupTenantID_Click = {
 	
 	$LookupInput = $textboxTenantToConnectToGraph.Text
-	
-	#Write-Log -Level INFO -Message "buttonLookupTenantID_Click input: $LookupInput"
 	
 	try
 	{
@@ -2087,7 +2027,8 @@ $buttonConnectMicrosoftGraph_Click={
 	}
 }
 
-$buttonReloadApplicationsListFromEntraID_Click={
+$buttonReloadApplicationsListFromEntraID_Click = {
+	
 	# Get data
 	Get-ApplicationsFromEntraID
 }
@@ -2502,8 +2443,7 @@ $buttonRemovedPolicyFromSel_Click={
 	else
 	{
 		Show-MsgBox -Prompt "Could not extract Policy ID from the selected item." -Title "Remove Policy Error" -Icon Critical -BoxType OKOnly
-	}
-	
+	}	
 }
 
 $changelogToolStripMenuItem_Click={
@@ -2564,10 +2504,10 @@ $myBlogToolStripMenuItem_Click={
 $myWebpageToolStripMenuItem_Click={
 	
 	# Open webside
-	Start-Process "https://sonnes.cloud"
+	Start-Process $global:WebsideURL
 	
 	# Log
-	Write-Log -Level INFO -Message "The user clicked on the link for more information about on the website https://sonnes.cloud"
+	Write-Log -Level INFO -Message "The user clicked on the link for more information about on the website $global:WebsideURL"
 	
 }
 
@@ -2606,31 +2546,8 @@ $buttonCreateDevPolicy_Click={
 	
 }
 
-<#
-function Convert-ToIsoDuration
-{
-	param ([string]$input)
-	
-	Write-Log -Level INFO -Message "Convert-ToIsoDuration received: '$input' (type: $($input.GetType().FullName))"
-	if ([string]::IsNullOrWhiteSpace($input)) { return $null }
-	if ($input -match '^\d+$')
-	{
-		if ($input -eq '0') { return $null }
-		$result = "P${input}D"
-		Write-Log -Level INFO -Message "Convert-ToIsoDuration output: '$result'"
-		return $result
-	}
-	if ($input -match '^P(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$')
-	{
-		Write-Log -Level INFO -Message "Convert-ToIsoDuration output: '$input'"
-		return $input
-	}
-	Write-Log -Level INFO -Message "Convert-ToIsoDuration output: ''"
-	return $null
-}
-#>
-
 $btnUpdateTenantwidePolicy_Click = {
+	
 	try
 	{
 		$params = Get-TenantWidePolicyUpdateParams
@@ -2678,9 +2595,7 @@ $guideToolStripMenuItem_Click={
 	# Log
 	Write-Log -Level INFO -Message "The user clicked on the link for more information about the tool and guide on the website $global:GitHubRepoURL"
 	
-}
-
-]]></Code>
+}]]></Code>
   <TV>0</TV>
   <Mode>1</Mode>
   <Assemblies />
