@@ -42,6 +42,31 @@ Function CheckLogPath
 	}
 }
 
+<#
+Sample: Write-LogError -exception $exception -roles "Security Administrator, Cloud Application Administrator"
+#>
+function Write-LogError
+{
+	param (
+		$exception,
+		$roles
+	)
+	if ($exception.ErrorDetails.Message.Contains("Insufficient privileges to complete the operation") -or $exception.ErrorDetails.Message.Contains("Insufficient privileges to complete the write operation"))
+	{
+		Write-Log "Authentication error. Please ensure you are logged in and have the correct role assignments."
+		Write-Log "Minimum required roles: $roles"
+		Write-Log "Error: $($exception.ToString())"
+	}
+	else
+	{
+		Write-Log "Encountered an unexpected error during script execution."
+		Write-Log "Error: $($exception.ToString())"
+	}
+	Write-Log "Error encountered during script execution. Rerun the script with -Debug parameter for more information on failed requests."
+	
+	#Exit
+}
+
 #Logfile write log function
 Function Write-Log
 {
@@ -87,6 +112,21 @@ Function Write-Log
 	
 	# Update the log TextBox in the UI
 	Update-Log -message $Message
+	
+	# --- Permission error detection and extra logging ---
+	if ($Level -eq "ERROR" -and (
+			$Message -like "*Insufficient privileges to complete the operation*" -or
+			$Message -like "*Insufficient privileges to complete the write operation*"
+		))
+	{
+		$requiredRoles = "Application Administrator, Cloud Application Administrator or Global Administrator"
+		$permMsg = "Authentication error. Please ensure you are logged in and have the correct role assignments. Minimum required roles: $requiredRoles"
+		Update-Log -message $permMsg
+		If ($logfile)
+		{
+			Add-Content $logfile -Value ("$Stamp : $Level : $UserName : $permMsg")
+		}
+	}
 	
 	#HOW TO ADD A LOG ENTRY: Write-Log -Level INFO -Message "The application is started"
 }

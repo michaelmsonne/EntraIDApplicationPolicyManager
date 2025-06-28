@@ -213,31 +213,6 @@ function Test-WindowsInDarkMode
 	}
 }
 
-<#
-Sample: Write-CreationErrorAndExit -exception $exception -roles "Security Administrator, Cloud Application Administrator"
-#>
-function Write-CreationErrorAndExit
-{
-	param (
-		$exception,
-		$roles
-	)
-	if ($exception.ErrorDetails.Message.Contains("Insufficient privileges to complete the operation") -or $exception.ErrorDetails.Message.Contains("Insufficient privileges to complete the write operation"))
-	{
-		Write-Log "Authentication error. Please ensure you are logged in and have the correct role assignments."
-		Write-Log "Minimum required roles: $roles"
-		Write-Log "Error: $($exception.ToString())"
-	}
-	else
-	{
-		Write-Log "Encountered an unexpected error during script execution."
-		Write-Log "Error: $($exception.ToString())"
-	}
-	Write-Log "Error encountered during script execution. Rerun the script with -Debug parameter for more information on failed requests."
-	
-	#Exit
-}
-
 function Show-InputBox
 {
 	param

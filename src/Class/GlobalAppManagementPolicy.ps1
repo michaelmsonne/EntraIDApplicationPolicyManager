@@ -57,17 +57,20 @@ function Reset-DefaultTenantPolicy
 									-Title "Reset Policy to Default" -Icon Question -BoxType YesNo -DefaultButton 2
 		if ($confirmation -ne "Yes") { return }
 		
+		# New-style restrictions object for Graph beta/GA
 		$defaultParams = @{
-			displayName			    = "Default app management tenant policy"
-			description			    = "Default tenant policy that enforces app management restrictions on applications and service principals. To apply policy to targeted resources, create a new policy under appManagementPolicies collection."
-			isEnabled			    = $true
-			applicationRestrictions = @{
-				passwordCredentials = @()
-				keyCredentials	    = @()
-			}
-			servicePrincipalRestrictions = @{
-				passwordCredentials = @()
-				keyCredentials	    = @()
+			displayName  = "Default app management tenant policy"
+			description  = "Default tenant policy that enforces app management restrictions on applications and service principals. To apply policy to targeted resources, create a new policy under appManagementPolicies collection."
+			isEnabled    = $true
+			restrictions = @{
+				applicationRestrictions = @{
+					audiences	   = $null
+					identifierUris = $null
+				}
+				"passwordCredentials@odata.context" = $null
+				passwordCredentials	    = @()
+				"keyCredentials@odata.context" = $null
+				keyCredentials		    = @()
 			}
 		}
 		
