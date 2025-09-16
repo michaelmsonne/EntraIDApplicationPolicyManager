@@ -38,7 +38,17 @@
 - [Credits](#credit)
 
 # Introduction
-This tool.....
+EntraIDApplicationPolicyManager is a Windows and PowerShell-based tool designed to help IT administrators manage, audit, and enforce application management policies in Microsoft Entra ID.
+
+With a modern graphical interface, it enables:
+- Tenant-wide and per-app policy management
+- Certificate and secret overview with expiry details (to-do)
+- Real-time logging and raw policy data inspection
+- Date-based restriction enforcement
+- Direct policy updates from Entra ID
+- more...
+
+Whether you need to secure sensitive apps, audit legacy configurations, or automate policy compliance, this tool makes Entra ID application policy management effortless, visual, and secure.
 
 ## Contents
 
@@ -60,12 +70,21 @@ Outline the file contents of the repository. It helps users navigate the codebas
 - Asynchronous resolution for improved performance and responsiveness.
 - Simple and easy-to-use.
 
+🤝 Free & Community-Driven - Open-source, with features shaped by your feedback!
+
 ### List:
-- Lookup Functionality:
-    The tool provides the ability to
+- Core Functionality:
+  - The tool provides the ability to manaage Tenant-Wide Policy Management and Per-App Policy Management (in progress)
+  - Raw Policy JSON Viewer
+  - Real-Time Logging
+  - Date-Based Restriction Enforcement
+  - Built-In Policy Enabler Toggle
+  - Direct Policy Load/Update
 
 - User Interface:
-    The tool includes a user-friendly graphical interface.
+  - The tool includes a user-friendly graphical interface.
+
+more to come...
 
 ## Download
 
@@ -75,55 +94,31 @@ Outline the file contents of the repository. It helps users navigate the codebas
 
 ## ⚡ Getting Started
 ### 🛠 Prerequisites
-- [.NET Core SDK](https://dotnet.microsoft.com/download) installed on your system.
-
-### Access
+- [PowerShell 5 or 7](https://github.com/PowerShell/PowerShell) installed.
+- Microsoft Graph PowerShell module: Microsoft.Graph.Authentication and Microsoft.Graph.Identity.SignIns
+  Install via  
+  ```powershell
+  Install-Module <name> -Scope CurrentUser
+  ```
 
 ### Installation
 You can either clone this repository and build the project yourself or use the provided installer.
 
 ## Usage
 
-```bash
-Tool token-based <token> [<destination>]
-```
+### 🔧 How to Use
 
-etc.: 
-```bash
-Tool token-based <token> [<destination>]
-```
-# 🔧 How to Use
-
-1. **Launch the Tool** as Administrator.
-2. ..
-
-Paramenters:
-
-- ACCESS_TOKEN: Replace this with your personal access token.
-- -all:
-
-# Final thoughts
-This is not an exhaustive method to retrieve every artifact...
+1. **Launch the Tool**.
+2. Login to Microsoft Graph
 
 # 📸 Screenshots
 
-# Email report sample:
+# Main UI:
 
-**Full layout:**
+**Layout:**
 
-![Screenshot](docs/email-report-full.png)
+![Screenshot](docs/main-ui.png)
 
-**Simpel layout:**
-
-![Screenshot](docs/email-report-simpel.png)
-
-# Console use:
-
-**Help and info menu:**
-
-Main menu:
-
-![Screenshot](docs/pictures/help-menu.png)
 
 # 🧪 Testing
 
@@ -132,13 +127,7 @@ Main menu:
 
 ## Building
 
-```bash
-$ dotnet publish -r win10-x64 -c release
-```
-
-So far I tested the application only for win10-x64 systems, but it might also work on other platforms.
-
-## Used 3rd party libraries for the tool:
+For now the tool is created in PowerShell Studio - therefor, a need 🤣
 
 # Contributing
 If you want to contribute to this project, please open an issue or submit a pull request. I welcome contributions :)
@@ -174,6 +163,12 @@ Reach out to the maintainer at one of the following places:
 - [GitHub discussions](https://github.com/michaelmsonne/EntraIDApplicationPolicyManager/discussions)
 - The email which is located [in GitHub profile](https://github.com/michaelmsonne)
 
+## From/in the community
+
+- [Teaser 2](https://www.linkedin.com/posts/michaelmsonne_microsoft-powershell-entraid-activity-7339739861966323715-e29y?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA4IH1oB8PMrp55sL9_szJxM6Yp2WuEJ6IA)
+- [Teaser 1](https://www.linkedin.com/posts/michaelmsonne_microsoft-powershell-entraid-activity-7337869500135919617-cQ5h?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA4IH1oB8PMrp55sL9_szJxM6Yp2WuEJ6IA)
+- ...
+
 # 📄 License
 This project is licensed under the **MIT License** - see the LICENSE file for details.
 
@@ -186,8 +181,3 @@ See [LICENSE](LICENSE) for more information.
 The installer is created from a Free Advanced Installer License for Open-Source from <a href="https://www.advancedinstaller.com/" target="_blank">https://www.advancedinstaller.com/</a> - this allowed me to create a feature complete installer in a user friendly environment with minimal effort - check it out!
 
 [<img src="https://cdn.advancedinstaller.com/svg/pressinfo/AiLogoColor.svg" title="Advanced Installer" alt="Advanced Instzaller" height="120"/>](https://www.advancedinstaller.com/)
-## JetBrains
-JetBrains specialises in intelligent, productivity-enabling tools to help you write clean, quality code across . NET, Java, Ruby, Python, PHP, JavaScript, C# and C++ platforms throughout all stages of development. <a href="https://www.jetbrains.com/" target="_blank">https://www.jetbrains.com/</a> - check it out!
-
-## SAST Tools
-[PVS-Studio](https://pvs-studio.com/en/pvs-studio/?utm_source=github&utm_medium=organic&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
